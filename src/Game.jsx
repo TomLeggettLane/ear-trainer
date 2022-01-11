@@ -1,17 +1,27 @@
 import React, {useState} from 'react';
 import AnswerButton from './AnswerButton';
 import {Howl, Howler} from 'howler';
+import $ from 'jquery';
 
 function Game() {
-    const [score, setScore] = useState(0);
+    const answerSet = ["minor 2nd", "major 2nd", "minor 3rd", "major 3rd", 
+                        "perfect 4th", "tritone", "perfect 5th", "minor 6th",
+                        "major 6th", "minor 7th", "major 7th"];
 
+    const [currentInterval, setCurrentInterval] = useState("minor 2nd");
+    const [score, setScore] = useState(0);
     const [answerOptions, setAnswerOptions] = useState([
-        {answerText: "answer1", isCorrect: true},
-        {answerText: "answer2", isCorrect: false},
-        {answerText: "answer3", isCorrect: false},
-        {answerText: "answer4", isCorrect: false},
+        {answerText: answerSet[0], isCorrect: true},
+        {answerText: answerSet[1], isCorrect: false},
+        {answerText: answerSet[2], isCorrect: false},
+        {answerText: answerSet[3], isCorrect: false},
     ]);
 
+    const [playCount, setPlayCount] = useState(2);
+    const [currentPlayCount, setCurrentPlayCount] = useState(0);
+
+    const keys = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+    const [key, setKey] = useState(keys[Math.floor(Math.random() * 12)]);
 
     function shuffleArray(array) {
         /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -24,30 +34,58 @@ function Game() {
     }
 
     function nextQuestion() {
+        $('#replayButton').prop('disabled', false);
+        setCurrentPlayCount(0);
+        shuffleArray(answerSet);
+        setCurrentInterval(answerSet[0].replace(" ", "-"));
         var questions = [
-            {answerText: "answer1", isCorrect: true},
-            {answerText: "answer2", isCorrect: false},
-            {answerText: "answer3", isCorrect: false},
-            {answerText: "answer4", isCorrect: false},
+            {answerText: answerSet[0], isCorrect: true},
+            {answerText: answerSet[1], isCorrect: false},
+            {answerText: answerSet[2], isCorrect: false},
+            {answerText: answerSet[3], isCorrect: false},
         ]
         shuffleArray(questions)
         setAnswerOptions(questions);
+        setKey(keys[Math.floor(Math.random() * 12)]);
     }
     
     function playQuestionSound() {
+        console.log(key);
+        console.log(currentInterval);
+
         const sfx = {
             sound: new Howl ({
-                src: ["/sounds/intervals/minor-2nd/Gb5-G5.mp3"],
+                src: ["/sounds/intervals/" + currentInterval + ".mp3"],
                 autoplay: true,
                 volume: 1.0,
                 loop: false,
-                html5:true
+                html5:true,
+                sprite: {
+                    C : [0, 1900],
+                    Db : [2000, 1900],
+                    D : [4000, 1900],
+                    Eb : [6000, 1900],
+                    E : [8000, 1900],
+                    F : [10000, 1900],
+                    Gb : [12000, 1900],
+                    G : [14000, 1900],
+                    Ab : [16000, 1900],
+                    A : [18000, 1900],
+                    Bb : [20000, 1900],
+                    B : [22000, 1900],
+                }
             })
         }
 
-        sfx.sound.play();
+        sfx.sound.play(key);
         console.log("audio played");
+        setCurrentPlayCount(currentPlayCount+1);
+    
+        if(currentPlayCount >= playCount) {
+            $('#replayButton').prop('disabled', true);
+        }
     }
+
     
     function updateScore() {
         setScore(score + 1);
@@ -59,7 +97,7 @@ function Game() {
                 <h1>Interval Training</h1>
             </div>
             <div>
-            <button onClick={playQuestionSound}>Play Sound plz work</button>
+            <button id="replayButton" onClick={playQuestionSound}>Play Sound plz work</button>
             </div>
             <div className="row">
                 <div className="col-md-6">

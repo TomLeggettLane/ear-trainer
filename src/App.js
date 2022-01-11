@@ -1,10 +1,19 @@
 import React from 'react';
-import Sidebar from './Sidebar';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Container from 'react-bootstrap/Container';
+
+import Sidebar from './Sidebar';
+import Footer from './Footer';
+import Game from './Game';
+
+
 
 function App() {
   return (
-    <Sidebar />
+    <Container fluid id="appContainer">
+      <Sidebar />
+      <Game />
+    </Container>
   );
 }
 

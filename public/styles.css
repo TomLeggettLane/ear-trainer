@@ -74,3 +74,13 @@ border-color: #1cb0f6;
       transform: translate3d(2px, 0, 0);
     }
 }
+
+
+.settings-menu {
+  background-color: grey;
+  border: 2px dashed black;
+}
+
+.btn-check{
+  border-radius: 0;
+}

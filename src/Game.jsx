@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import AnswerButton from './AnswerButton';
+import { SettingsMenu, playbackRepeats, guessesAllowed, playbackSpeed } from './SettingsMenu';
 import {Howl, Howler} from 'howler';
 import $ from 'jquery';
 
@@ -60,6 +61,7 @@ function Game() {
                 volume: 1.0,
                 loop: false,
                 html5:true,
+                rate: playbackSpeed,
                 sprite: {
                     C : [0, 1900],
                     Db : [2000, 1900],
@@ -96,8 +98,9 @@ function Game() {
             <div className="container" id="game-title">
                 <h1>Interval Training</h1>
             </div>
+            <SettingsMenu />
             <div>
-            <button id="replayButton" onClick={playQuestionSound}>Play Sound plz work</button>
+            <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
             </div>
             <div className="row">
                 <div className="col-md-6">

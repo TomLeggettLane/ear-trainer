@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import AnswerButton from './AnswerButton';
-import { SettingsMenu, playbackRepeats, guessesAllowed, playbackSpeed } from './SettingsMenu';
+import SettingsMenu from './SettingsMenu';
 import {Howl, Howler} from 'howler';
 import $ from 'jquery';
 
 function Game() {
-    const answerSet = ["minor 2nd", "major 2nd", "minor 3rd", "major 3rd", 
-                        "perfect 4th", "tritone", "perfect 5th", "minor 6th",
-                        "major 6th", "minor 7th", "major 7th"];
+    const [answerSet, setAnswerSet] = useState(["minor 2nd", "major 2nd", "minor 3rd", "major 3rd", 
+                                                "perfect 4th", "tritone", "perfect 5th", "minor 6th",
+                                                "major 6th", "minor 7th", "major 7th"]);
 
     const [currentInterval, setCurrentInterval] = useState("minor 2nd");
     const [score, setScore] = useState(0);
@@ -18,11 +18,34 @@ function Game() {
         {answerText: answerSet[3], isCorrect: false},
     ]);
 
-    const [playCount, setPlayCount] = useState(2);
-    const [currentPlayCount, setCurrentPlayCount] = useState(0);
+    const [currentGuess, setCurrentGuess] = useState(0);
 
     const keys = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
     const [key, setKey] = useState(keys[Math.floor(Math.random() * 12)]);
+
+    const [playbackRepeats, setPlaybackRepeats] = useState([2]);
+    const [guessesAllowed, setGuessesAllowed] = useState([3]);
+    const [playbackSpeed, setPlaybackSpeed] = useState([1]);
+
+    function handleSettingsChange(setting, newValue) {
+        console.log(setting, newValue);
+        switch (setting) {
+            case "playbackRepeats":
+                setPlaybackRepeats(newValue);
+                break;
+            case "guessesAllowed":
+                setGuessesAllowed(newValue);
+                break;
+            case "playbackSpeed":
+                setPlaybackSpeed(newValue);
+                break;   
+            case "answerSet":
+                setAnswerSet(newValue);
+                console.log(answerSet);
+                break
+        }
+        console.log(answerSet);
+    }
 
     function shuffleArray(array) {
         /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -36,7 +59,7 @@ function Game() {
 
     function nextQuestion() {
         $('#replayButton').prop('disabled', false);
-        setCurrentPlayCount(0);
+        setCurrentGuess(0);
         shuffleArray(answerSet);
         setCurrentInterval(answerSet[0].replace(" ", "-"));
         var questions = [
@@ -81,16 +104,20 @@ function Game() {
 
         sfx.sound.play(key);
         console.log("audio played");
-        setCurrentPlayCount(currentPlayCount+1);
+        setCurrentGuess(currentGuess+1);
     
-        if(currentPlayCount >= playCount) {
+        if(currentGuess >= guessesAllowed) {
             $('#replayButton').prop('disabled', true);
         }
     }
 
     
-    function updateScore() {
-        setScore(score + 1);
+    function updateScore(correct) {
+        if(correct) setScore(score + 1);
+    }
+
+    function incrementGuessCount() {
+        setCurrentGuess(currentGuess+1);
     }
     
     return(
@@ -98,7 +125,13 @@ function Game() {
             <div className="container" id="game-title">
                 <h1>Interval Training</h1>
             </div>
-            <SettingsMenu />
+            <SettingsMenu 
+                onChange={handleSettingsChange}
+                playbackRepeats = {playbackRepeats}
+                playbackSpeed = {playbackSpeed}
+                guessesAllowed={guessesAllowed}
+                answerSet={answerSet}
+            />
             <div>
             <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
             </div>
@@ -110,6 +143,9 @@ function Game() {
                         id="answerButton-0"
                         nextQuestion={nextQuestion}
                         updateScore={updateScore}
+                        currentGuess={currentGuess}
+                        incrementGuessCount={incrementGuessCount}
+                        guessesAllowed={guessesAllowed}
                     />
                     <AnswerButton
                         answer={answerOptions[1].answerText}
@@ -117,6 +153,9 @@ function Game() {
                         id="answerButton-1"
                         nextQuestion={nextQuestion}
                         updateScore={updateScore}
+                        currentGuess={currentGuess}
+                        incrementGuessCount={incrementGuessCount}
+                        guessesAllowed={guessesAllowed}
                     />
                 </div>
                 <div className="col-md-6">
@@ -126,6 +165,9 @@ function Game() {
                         id="answerButton-2"
                         nextQuestion={nextQuestion}
                         updateScore={updateScore}
+                        currentGuess={currentGuess}
+                        incrementGuessCount={incrementGuessCount}
+                        guessesAllowed={guessesAllowed}
                     />
                     <AnswerButton
                         answer={answerOptions[3].answerText}
@@ -133,6 +175,9 @@ function Game() {
                         id="answerButton-3"
                         nextQuestion={nextQuestion}
                         updateScore={updateScore}
+                        currentGuess={currentGuess}
+                        incrementGuessCount={incrementGuessCount}
+                        guessesAllowed={guessesAllowed}
                     />
                 </div>
             </div>

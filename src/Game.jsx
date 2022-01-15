@@ -1,34 +1,74 @@
 import React, {useState} from 'react';
 import AnswerButton from './AnswerButton';
 import SettingsMenu from './SettingsMenu';
+import MusicPlayer from './MusicPlayer';
 import {Howl, Howler} from 'howler';
 import $ from 'jquery';
+import { Button , Collapse } from 'react-bootstrap';
+
 
 function Game() {
-    const [answerSet, setAnswerSet] = useState(["minor 2nd", "major 2nd", "minor 3rd", "major 3rd", 
-                                                "perfect 4th", "tritone", "perfect 5th", "minor 6th",
-                                                "major 6th", "minor 7th", "major 7th"]);
+    const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 
-    const [currentInterval, setCurrentInterval] = useState("minor 2nd");
+    const [currentInterval, setCurrentInterval] = useState(4);
     const [score, setScore] = useState(0);
     const [answerOptions, setAnswerOptions] = useState([
-        {answerText: answerSet[0], isCorrect: true},
-        {answerText: answerSet[1], isCorrect: false},
-        {answerText: answerSet[2], isCorrect: false},
-        {answerText: answerSet[3], isCorrect: false},
+        {answerIndex: answerSet[4], isCorrect: true},
+        {answerIndex: answerSet[1], isCorrect: false},
+        {answerIndex: answerSet[2], isCorrect: false},
+        {answerIndex: answerSet[3], isCorrect: false},
     ]);
 
     const [currentGuess, setCurrentGuess] = useState(0);
+    const [key, setKey] = useState(24 + Math.floor(Math.random() * 36));
+    console.log('key', key);
 
-    const keys = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
-    const [key, setKey] = useState(keys[Math.floor(Math.random() * 12)]);
-
+    const [currentPlayback, setCurrentPlayback] = useState(0);
     const [playbackRepeats, setPlaybackRepeats] = useState([2]);
     const [guessesAllowed, setGuessesAllowed] = useState([3]);
     const [playbackSpeed, setPlaybackSpeed] = useState([1]);
+    const [intervalDirection, setIntervalDirection] = useState('up');
+    const [randomDirection, setRandomDirection] = useState(0);
+
+    const sound = new Howl({
+        src: ['./C3-B6.mp3'],
+        html5: true,
+        rate: playbackSpeed,
+        volume: 1.0,
+        loop: false,
+        onload() {
+            soundEngine.init();
+        },
+        onloaderror(e, msg) {
+            console.log('Error', e, msg);
+        }
+    });
+
+    const correctSound = new Howl({
+        src: ['./correct.mp3'],
+        html5: true,
+        volume: 0.3
+    })
+
+    const incorrectSound = new Howl({
+        src: ['./incorrect.mp3'],
+        html5: true,
+        volume: 0.2
+    })
+
+    const soundEngine = {
+        init() {
+            const lengthOfNote = 2000;
+            let timeIndex = 0;
+            //24 - 71 is C3 - B6
+            for(let i=24; i < 72; i++) {
+                sound['_sprite'][i] = [timeIndex, lengthOfNote];
+                timeIndex += lengthOfNote;
+            }
+        }
+    }
 
     function handleSettingsChange(setting, newValue) {
-        console.log(setting, newValue);
         switch (setting) {
             case "playbackRepeats":
                 setPlaybackRepeats(newValue);
@@ -42,9 +82,11 @@ function Game() {
             case "answerSet":
                 setAnswerSet(newValue);
                 console.log(answerSet);
-                break
+                break;
+            case "intervalDirection":
+                setIntervalDirection(newValue);
+                break;
         }
-        console.log(answerSet);
     }
 
     function shuffleArray(array) {
@@ -60,58 +102,69 @@ function Game() {
     function nextQuestion() {
         $('#replayButton').prop('disabled', false);
         setCurrentGuess(0);
+        setCurrentPlayback(0);
         shuffleArray(answerSet);
-        setCurrentInterval(answerSet[0].replace(" ", "-"));
+        setCurrentInterval(answerSet[0]);
+        setKey(24 + Math.floor(Math.random() * 36));
+
         var questions = [
-            {answerText: answerSet[0], isCorrect: true},
-            {answerText: answerSet[1], isCorrect: false},
-            {answerText: answerSet[2], isCorrect: false},
-            {answerText: answerSet[3], isCorrect: false},
+            {answerIndex: answerSet[0], isCorrect: true},
+            {answerIndex: answerSet[1], isCorrect: false},
+            {answerIndex: answerSet[2], isCorrect: false},
+            {answerIndex: answerSet[3], isCorrect: false},
         ]
+
         shuffleArray(questions)
         setAnswerOptions(questions);
-        setKey(keys[Math.floor(Math.random() * 12)]);
+        setRandomDirection(Math.random());
+    }
+
+    function playGuessSound(correct) {
+        if(correct) correctSound.play();
+        else incorrectSound.play();
     }
     
     function playQuestionSound() {
-        console.log(key);
-        console.log(currentInterval);
+        const waitTime = 1800/playbackSpeed;
+        setCurrentPlayback(currentPlayback+1);
 
-        const sfx = {
-            sound: new Howl ({
-                src: ["/sounds/intervals/" + currentInterval + ".mp3"],
-                autoplay: true,
-                volume: 1.0,
-                loop: false,
-                html5:true,
-                rate: playbackSpeed,
-                sprite: {
-                    C : [0, 1900],
-                    Db : [2000, 1900],
-                    D : [4000, 1900],
-                    Eb : [6000, 1900],
-                    E : [8000, 1900],
-                    F : [10000, 1900],
-                    Gb : [12000, 1900],
-                    G : [14000, 1900],
-                    Ab : [16000, 1900],
-                    A : [18000, 1900],
-                    Bb : [20000, 1900],
-                    B : [22000, 1900],
-                }
-            })
+        if(currentPlayback >= playbackRepeats) {
+            $('#replayButton').prop('disabled', true);
         }
 
-        sfx.sound.play(key);
-        console.log("audio played");
-        setCurrentGuess(currentGuess+1);
-    
-        if(currentGuess >= guessesAllowed) {
-            $('#replayButton').prop('disabled', true);
+        switch(intervalDirection) {
+            case 'up':
+                sound.play((key).toString())
+                setTimeout(function() {
+                    sound.play((key + currentInterval).toString());
+                  }, waitTime);
+                break
+            case 'down':
+                sound.play((key + currentInterval).toString())
+                setTimeout(function() {
+                    sound.play(key.toString());
+                  }, waitTime);
+                break
+            case 'random':
+                if(randomDirection < 0.5) {
+                    sound.play(key.toString());
+                    setTimeout(function() {
+                        sound.play((key + currentInterval).toString());
+                      }, waitTime);
+                } else {
+                    sound.play((key + currentInterval).toString())
+                    setTimeout(function() {
+                        sound.play(key.toString());
+                      }, waitTime);
+                }
+                break
+            case 'unison':
+                sound.play(key.toString());
+                sound.play((key + currentInterval).toString());
+                break;
         }
     }
 
-    
     function updateScore(correct) {
         if(correct) setScore(score + 1);
     }
@@ -120,67 +173,57 @@ function Game() {
         setCurrentGuess(currentGuess+1);
     }
     
+    const [settingsOpen, setSettingsOpen] = useState(false);
+
     return(
         <div className="container" id="game">
             <div className="container" id="game-title">
                 <h1>Interval Training</h1>
             </div>
-            <SettingsMenu 
-                onChange={handleSettingsChange}
-                playbackRepeats = {playbackRepeats}
-                playbackSpeed = {playbackSpeed}
-                guessesAllowed={guessesAllowed}
-                answerSet={answerSet}
-            />
-            <div>
+            <div id="settings-toggle-btn">
+                <Button
+                    onClick={() => setSettingsOpen(!settingsOpen)}
+                    aria-controls="example-collapse-text"
+                    aria-expanded={settingsOpen}
+                ><i className="fas fa-sliders-h"></i> Settings</Button>
+
+                <Collapse in={settingsOpen}>
+                    <div id="example-collapse-text">
+                        <SettingsMenu
+                            onChange={handleSettingsChange}
+                            playbackRepeats = {playbackRepeats}
+                            playbackSpeed = {playbackSpeed}
+                            guessesAllowed={guessesAllowed}
+                            answerSet={answerSet}
+                            intervalDirection = {intervalDirection}
+                         />
+                    </div>
+                </Collapse>
+             </div>
+
+             <div>
             <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
             </div>
+
             <div className="row">
-                <div className="col-md-6">
-                    <AnswerButton
-                        answer={answerOptions[0].answerText}
-                        isCorrect={answerOptions[0].isCorrect}
-                        id="answerButton-0"
-                        nextQuestion={nextQuestion}
-                        updateScore={updateScore}
-                        currentGuess={currentGuess}
-                        incrementGuessCount={incrementGuessCount}
-                        guessesAllowed={guessesAllowed}
-                    />
-                    <AnswerButton
-                        answer={answerOptions[1].answerText}
-                        isCorrect={answerOptions[1].isCorrect}
-                        id="answerButton-1"
-                        nextQuestion={nextQuestion}
-                        updateScore={updateScore}
-                        currentGuess={currentGuess}
-                        incrementGuessCount={incrementGuessCount}
-                        guessesAllowed={guessesAllowed}
-                    />
-                </div>
-                <div className="col-md-6">
-                    <AnswerButton
-                        answer={answerOptions[2].answerText}
-                        isCorrect={answerOptions[2].isCorrect}
-                        id="answerButton-2"
-                        nextQuestion={nextQuestion}
-                        updateScore={updateScore}
-                        currentGuess={currentGuess}
-                        incrementGuessCount={incrementGuessCount}
-                        guessesAllowed={guessesAllowed}
-                    />
-                    <AnswerButton
-                        answer={answerOptions[3].answerText}
-                        isCorrect={answerOptions[3].isCorrect}
-                        id="answerButton-3"
-                        nextQuestion={nextQuestion}
-                        updateScore={updateScore}
-                        currentGuess={currentGuess}
-                        incrementGuessCount={incrementGuessCount}
-                        guessesAllowed={guessesAllowed}
-                    />
-                </div>
+                    {answerOptions.map((element, index) =>
+                        <div className="col-md-6">
+                            <AnswerButton
+                                key={index}
+                                answerIndex={element.answerIndex}
+                                isCorrect={element.isCorrect}
+                                id={"answerButton-" + index}
+                                nextQuestion={nextQuestion}
+                                updateScore={updateScore}
+                                currentGuess={currentGuess}
+                                incrementGuessCount={incrementGuessCount}
+                                guessesAllowed={guessesAllowed}
+                                playGuessSound={playGuessSound}
+                            />
+                        </div>
+                    )}
             </div>
+
             <div>
                 <p>Score:</p>
                 <h1>{score}</h1>

@@ -28,13 +28,24 @@ function SettingsMenu(props) {
             <ToggleButtonGroup size="sm" type="radio" name="playbackSpeed" value={props.playbackSpeed} onChange={(e) => props.onChange("playbackSpeed", e)}>
                 <label>Playback Speed :</label>
                 <ToggleButton id="speed-btn-1" value={0.5}>0.5x</ToggleButton>
-                <ToggleButton id="speed-btn-2" value={1}>1x</ToggleButton>
-                <ToggleButton id="speed-btn-3" value={1.5}>1.5x</ToggleButton>
+                <ToggleButton id="speed-btn-2" value={0.75}>0.75x</ToggleButton>
+                <ToggleButton id="speed-btn-3" value={1}>1x</ToggleButton>
                 <ToggleButton id="speed-btn-4" value={2}>2x</ToggleButton>
-                <ToggleButton id="speed-btn-5" value={3}>3x</ToggleButton>
                 <p>{props.playbackSpeed}</p>
             </ToggleButtonGroup>
             <br />
+            
+            <ToggleButtonGroup size="sm" type="radio" name="intervalDirection" value={props.intervalDirection} onChange={(e) => props.onChange("intervalDirection", e)}>
+                <label>Interval Direction :</label>
+                <ToggleButton id="direction-btn-1" value={'up'}>up</ToggleButton>
+                <ToggleButton id="direction-btn-2" value={'down'}>down</ToggleButton>
+                <ToggleButton id="direction-btn-3" value={'random'}>random</ToggleButton>
+                <ToggleButton id="direction-btn-4" value={'unison'}>unison</ToggleButton>
+                <p>{props.intervalDirection}</p>
+            </ToggleButtonGroup>
+
+            <br />
+
             <ToggleButtonGroup size="sm" type="checkbox" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                 <label>Included Intervals :</label>
                 <ToggleButton id="interval-btn-1" value={"minor 2nd"}>m2</ToggleButton>

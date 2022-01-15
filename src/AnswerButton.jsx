@@ -2,9 +2,13 @@ import React from 'react';
 import $ from 'jquery';
 
 function AnswerButton(props) {
+    const answerText = ['Perfect Unison', 'Minor 2nd', 'Major 2nd', 'Minor 3rd',
+                        'Major 3rd', 'Perfect 4th', 'Tritone', 'Perfect 5th', 
+                        'Minor 6th', 'Major 6th', 'Minor 7th', 'Major 7th']
+
 
     function handleClick(event) {
-        console.log(props.currentGuess, props.guessesAllowed);
+        props.playGuessSound(props.isCorrect);
         if(!props.isCorrect) {
             $('#' + props.id).addClass('button-false');
             props.incrementGuessCount();
@@ -23,7 +27,7 @@ function AnswerButton(props) {
 
     return (
         <div className="button" onClick={handleClick} id={props.id}>
-            <p className="answer-choice">{props.answer}</p>
+            <p className="answer-choice">{answerText[props.answerIndex]}</p>
         </div>
     )
 }

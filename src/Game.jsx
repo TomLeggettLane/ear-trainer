@@ -21,7 +21,6 @@ function Game() {
 
     const [currentGuess, setCurrentGuess] = useState(0);
     const [key, setKey] = useState(24 + Math.floor(Math.random() * 36));
-    console.log('key', key);
 
     const [currentPlayback, setCurrentPlayback] = useState(0);
     const [playbackRepeats, setPlaybackRepeats] = useState([2]);
@@ -68,7 +67,7 @@ function Game() {
         }
     }
 
-    function handleSettingsChange(setting, newValue) {
+    function handleSettingsChange(setting, newValue, checkbox) {
         switch (setting) {
             case "playbackRepeats":
                 setPlaybackRepeats(newValue);
@@ -80,8 +79,34 @@ function Game() {
                 setPlaybackSpeed(newValue);
                 break;   
             case "answerSet":
+                const tempAnswerSet = [...answerSet];
+
+                if(newValue === "first-octave" || newValue === "second-octave") {
+                    if(newValue === "first-octave") {
+                        for(let i = 0; i < 12; i++) {
+                            const index = tempAnswerSet.indexOf(i);
+                            if (index === -1 && checkbox) {
+                                tempAnswerSet.push(i);
+                            } else if(index > -1 && !checkbox) {
+                                tempAnswerSet.splice(index, 1);   
+                            }
+                        }
+                    } else if(newValue === "second-octave") {
+                        for(let i = 12; i < 24; i++) {
+                            const index = tempAnswerSet.indexOf(i);
+                            if (index === -1 && checkbox) {
+                                tempAnswerSet.push(i);
+                            } else if(index > -1 && !checkbox) {
+                                tempAnswerSet.splice(index, 1);   
+                            }
+                        }
+                    }
+                    newValue = tempAnswerSet;
+                }
+                
+                console.log("newValue:", newValue);
                 setAnswerSet(newValue);
-                console.log(answerSet);
+                console.log("currentAnswerSet: ", answerSet);
                 break;
             case "intervalDirection":
                 setIntervalDirection(newValue);
@@ -173,7 +198,7 @@ function Game() {
         setCurrentGuess(currentGuess+1);
     }
     
-    const [settingsOpen, setSettingsOpen] = useState(false);
+    const [settingsOpen, setSettingsOpen] = useState(true);
 
     return(
         <div className="container" id="game">
@@ -185,7 +210,7 @@ function Game() {
                     onClick={() => setSettingsOpen(!settingsOpen)}
                     aria-controls="example-collapse-text"
                     aria-expanded={settingsOpen}
-                ><i className="fas fa-sliders-h"></i> Settings</Button>
+                ><i className="fas fa-sliders-h"></i></Button>
 
                 <Collapse in={settingsOpen}>
                     <div id="example-collapse-text">

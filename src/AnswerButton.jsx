@@ -4,7 +4,10 @@ import $ from 'jquery';
 function AnswerButton(props) {
     const answerText = ['Perfect Unison', 'Minor 2nd', 'Major 2nd', 'Minor 3rd',
                         'Major 3rd', 'Perfect 4th', 'Tritone', 'Perfect 5th', 
-                        'Minor 6th', 'Major 6th', 'Minor 7th', 'Major 7th']
+                        'Minor 6th', 'Major 6th', 'Minor 7th', 'Major 7th',
+                        'Perfect Octave', 'Minor 9th', 'Major 9th', 'Minor 3rd (8va)',
+                        'Major 3rd (8va)', 'Perfect 11th', '#11', 'Perfect 5th (8va)',
+                        'Minor 13th', 'Major 13th', 'Minor 7th (8va)', 'Major 7th (8va)']
 
 
     function handleClick(event) {

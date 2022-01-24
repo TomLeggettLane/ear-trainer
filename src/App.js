@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 import Game from './Game';
+import $ from 'jquery';
 
 
 

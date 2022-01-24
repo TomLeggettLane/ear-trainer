@@ -3,6 +3,7 @@ body #root {
     width: 100vw;
     position: absolute;
     background-color: white;
+    font-family: 'Nunito', sans-serif;
 }
 
 #appContainer {
@@ -19,7 +20,7 @@ body #root {
 
 #game-title {
     text-align: center;
-    margin-bottom: 10%;
+    margin: 5% auto 10%;
 }
 
 .button {
@@ -44,6 +45,7 @@ border-color: #1cb0f6;
 }
 
 .answer-choice {
+    font-weight: bold;
     margin: auto auto;
 }
 
@@ -80,12 +82,47 @@ border-color: #1cb0f6;
   border: 2px dashed black;
 }
 
+.settings-title {
+  font-size: 20px;
+  margin-bottom:10px;
+}
+
+
+#settings-menu {
+  background-color: white;
+}
+
+#settings-toggle-btn {
+  position: absolute ;
+  bottom: 12px;
+  right: 30px;
+}
+.settings-col {
+  text-align: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.settings-bar {
+  margin: 5px 10px 5px;
+}
+
+.settings-label-button {
+  background-color: #D6E5FA !important;
+  color: black !important;
+  width: 150px;
+  border: 1px solid grey !important;
+  border-radius: 15px 0 0 15px !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .btn-check{
   border-radius: 0;
 }
 
-#settings-menu {
-  background-color: white;
+#playback {
+  text-align: center;
 }
 
 .btn-toggle {
@@ -109,21 +146,22 @@ border-color: #1cb0f6;
 }
 
 .btn-toggle-active {
-  background-color: #d3d3d3 !important;
+  background-color: #D6E5FA !important;
   text-align: center;
   width: 60px;
+  border: 1px solid grey !important; 
 }
 
 .btn-toggle-active.right {
   border-radius: 0 15px 15px 0 !important;
-  background-color: #d3d3d3 !important;
+  background-color: #D6E5FA !important;
   text-align: center;
   width: 60px;
 }
 
 .btn-toggle-active.left {
   border-radius: 15px 0 0 15px !important;
-  background-color: #d3d3d3 !important;
+  background-color: #D6E5FA !important;
   text-align: center;
   width: 60px;
 }
@@ -133,16 +171,104 @@ border-color: #1cb0f6;
   max-width: 50px !important;
 }
 
-.settings-bar {
-  margin: 5px 10px 5px;
+.octave-label {
+  margin-bottom: 8px;
 }
 
-.settings-label-button {
-  background-color: white !important;
-  color: black !important;
+.octave-checkbox {
+  margin-right: 7px;
+}
+
+.warning-text {
+  color: red;
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 15px;
+}
+
+#scoreBoard {
+  margin-left: 30px;
+}
+
+.score-correct {
+  color: green;
+}
+
+.score-incorrect {
+  color: red;
+}
+
+#current-score {
+  font-size: 38px;
+  font-weight: bold;
+}
+
+#question-score {
+  font-size: 20px;
+}
+
+.relative {
+  position: relative;
+}
+
+
+#circle-btn {
+  border: 0;
+  position: relative;
+  transform: rotate(45deg);
+}
+
+.music-btn {
+  transform: rotate(-45deg);
+}
+
+#circle-btn::before,
+#circle-btn::after {
+  box-sizing: inherit;
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.spin {
+  height: 150px;
   width: 150px;
-  border: 1px solid grey !important;
-  border-radius: 15px 0 0 15px !important;
-  cursor: not-allowed;
-  pointer-events: none;
+}
+
+.spin::before,
+.spin::after {
+  top: 0;
+  left: 0;
+}
+
+.spin::before {
+  border: 2px solid transparent;
+}
+.spin::after {
+  border: 0 solid transparent;
+}
+.spin:hover::before {
+  border-top-color: #0eb7da;
+  border-right-color: #0eb7da;
+  border-bottom-color: #0eb7da;
+  transition: border-top-color 0.15s linear, border-right-color 0.15s linear 0.10s, border-bottom-color 0.15s linear 0.20s;
+}
+
+.spin:hover::after {
+  border-top: 2px solid #0eb7da;
+  border-left-width: 2px;
+  border-right-width: 2px;
+  transform: rotate(270deg);
+  transition: transform 0.4s linear 0s, border-left-width 0s linear 0.35s, -webkit-transform 0.4s linear 0s;
+}
+
+#circle-btn {
+  border-radius: 100%;
+  box-shadow: none;
+}
+
+#circle-btn::before,
+#circle-btn::after {
+  border-radius: 100%;
 }

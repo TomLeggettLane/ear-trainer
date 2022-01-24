@@ -11,7 +11,6 @@ function AnswerButton(props) {
 
 
     function handleClick(event) {
-        props.playGuessSound(props.isCorrect);
         if(!props.isCorrect) {
             $('#' + props.id).addClass('button-false');
             props.incrementGuessCount();
@@ -20,6 +19,7 @@ function AnswerButton(props) {
             $('#' + props.id).addClass('button-correct');
         }
         if(props.isCorrect || props.currentGuess + 1 >= props.guessesAllowed) {
+            props.playGuessSound(props.isCorrect);
             setTimeout(function (){
                 $('.button').removeClass('button-correct button-false');
                 props.updateScore(props.isCorrect);

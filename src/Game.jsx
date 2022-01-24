@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import AnswerButton from './AnswerButton';
 import SettingsMenu from './SettingsMenu';
 import MusicPlayer from './MusicPlayer';
+import Score from './Score'
 import {Howl, Howler} from 'howler';
 import $ from 'jquery';
 import { Button , Collapse } from 'react-bootstrap';
@@ -9,9 +10,10 @@ import { Button , Collapse } from 'react-bootstrap';
 
 function Game() {
     const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-
+    const [settingsOpen, setSettingsOpen] = useState(true);
     const [currentInterval, setCurrentInterval] = useState(4);
-    const [score, setScore] = useState(0);
+    const [currentScore, setCurrentScore] = useState(0);
+    const [totalQuestions, setTotalQuestions] = useState(0);
     const [answerOptions, setAnswerOptions] = useState([
         {answerIndex: answerSet[4], isCorrect: true},
         {answerIndex: answerSet[1], isCorrect: false},
@@ -19,15 +21,16 @@ function Game() {
         {answerIndex: answerSet[3], isCorrect: false},
     ]);
 
+
     const [currentGuess, setCurrentGuess] = useState(0);
     const [key, setKey] = useState(24 + Math.floor(Math.random() * 36));
-
     const [currentPlayback, setCurrentPlayback] = useState(0);
-    const [playbackRepeats, setPlaybackRepeats] = useState([2]);
-    const [guessesAllowed, setGuessesAllowed] = useState([3]);
-    const [playbackSpeed, setPlaybackSpeed] = useState([1]);
+    const [playbackRepeats, setPlaybackRepeats] = useState(2);
+    const [guessesAllowed, setGuessesAllowed] = useState(3);
+    const [playbackSpeed, setPlaybackSpeed] = useState(1);
     const [intervalDirection, setIntervalDirection] = useState('up');
     const [randomDirection, setRandomDirection] = useState(0);
+    const [answerBoxes, setAnswerBoxes] = useState(4);
 
     const sound = new Howl({
         src: ['./C3-B6.mp3'],
@@ -77,6 +80,13 @@ function Game() {
                 break;
             case "playbackSpeed":
                 setPlaybackSpeed(newValue);
+                break;
+            case "answerBoxes":
+                if(answerSet.length >= newValue) {
+                    setAnswerBoxes(newValue);
+                } else {
+                    alert("Not enough intervals selected for " + newValue + " answer boxes!");
+                }
                 break;   
             case "answerSet":
                 const tempAnswerSet = [...answerSet];
@@ -103,10 +113,7 @@ function Game() {
                     }
                     newValue = tempAnswerSet;
                 }
-                
-                console.log("newValue:", newValue);
                 setAnswerSet(newValue);
-                console.log("currentAnswerSet: ", answerSet);
                 break;
             case "intervalDirection":
                 setIntervalDirection(newValue);
@@ -124,6 +131,30 @@ function Game() {
         }
     }
 
+    function getNewQuestion() {
+        const answers = [];
+
+        if(answerSet.length === 0) {
+            alert('No intervals selected!');
+            answers.push({answerIndex: "Please select at least 2 intervals", isCorrect: false});
+            return;
+        } else if(answerSet.length === 1) {
+            alert('Only 1 interval selected!');
+            return;
+        } else {
+            console.log(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
+            if(answerSet.length < answerBoxes) {
+                setAnswerBoxes(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
+            }
+            for(let i=0; i < Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes); i++) {
+                answers.push({answerIndex: answerSet[i], isCorrect: false})
+            }
+            answers[0].isCorrect = true;
+            shuffleArray(answers)
+        }
+        return answers;
+    }
+
     function nextQuestion() {
         $('#replayButton').prop('disabled', false);
         setCurrentGuess(0);
@@ -131,24 +162,16 @@ function Game() {
         shuffleArray(answerSet);
         setCurrentInterval(answerSet[0]);
         setKey(24 + Math.floor(Math.random() * 36));
-
-        var questions = [
-            {answerIndex: answerSet[0], isCorrect: true},
-            {answerIndex: answerSet[1], isCorrect: false},
-            {answerIndex: answerSet[2], isCorrect: false},
-            {answerIndex: answerSet[3], isCorrect: false},
-        ]
-
-        shuffleArray(questions)
-        setAnswerOptions(questions);
+        const newQuestion = getNewQuestion();
+        setAnswerOptions(newQuestion);
         setRandomDirection(Math.random());
     }
 
     function playGuessSound(correct) {
-        if(correct) correctSound.play();
-        else incorrectSound.play();
+        const guessSound = correct ? correctSound : incorrectSound;
+        guessSound.play();
     }
-    
+
     function playQuestionSound() {
         const waitTime = 1800/playbackSpeed;
         setCurrentPlayback(currentPlayback+1);
@@ -191,45 +214,60 @@ function Game() {
     }
 
     function updateScore(correct) {
-        if(correct) setScore(score + 1);
-    }
+        const colorClass = correct ? 'score-correct' : 'score-incorrect';
+        if(correct) setCurrentScore(currentScore + 1);
+        setTotalQuestions(totalQuestions+1);
+
+        $('#current-score').addClass(colorClass);
+        setTimeout(function (){
+            $('#current-score').removeClass(colorClass);
+            }, 1000);
+        }
 
     function incrementGuessCount() {
         setCurrentGuess(currentGuess+1);
     }
-    
-    const [settingsOpen, setSettingsOpen] = useState(true);
 
     return(
         <div className="container" id="game">
             <div className="container" id="game-title">
                 <h1>Interval Training</h1>
             </div>
-            <div id="settings-toggle-btn">
-                <Button
-                    onClick={() => setSettingsOpen(!settingsOpen)}
-                    aria-controls="example-collapse-text"
-                    aria-expanded={settingsOpen}
-                ><i className="fas fa-sliders-h"></i></Button>
-
-                <Collapse in={settingsOpen}>
-                    <div id="example-collapse-text">
-                        <SettingsMenu
-                            onChange={handleSettingsChange}
-                            playbackRepeats = {playbackRepeats}
-                            playbackSpeed = {playbackSpeed}
-                            guessesAllowed={guessesAllowed}
-                            answerSet={answerSet}
-                            intervalDirection = {intervalDirection}
-                         />
-                    </div>
-                </Collapse>
-             </div>
-
-             <div>
-            <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
+            <div id='playback'>
+                <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
+                <MusicPlayer 
+                    playQuestionSound={playQuestionSound}
+                />
             </div>
-
+            <div className="row">
+                <div className="col-sm-6">
+                    <Score 
+                        currentScore={currentScore}
+                        totalQuestions={totalQuestions}
+                    />
+                </div>
+                <div className="col-sm-6 relative">
+                    <Button 
+                        id="settings-toggle-btn"
+                        onClick={() => setSettingsOpen(!settingsOpen)}
+                        aria-controls="example-collapse-text"
+                        aria-expanded={settingsOpen}
+                    ><i className="fas fa-sliders-h"></i></Button>
+                </div>
+                    <Collapse in={settingsOpen}>
+                        <div id="example-collapse-text">
+                            <SettingsMenu
+                                onChange={handleSettingsChange}
+                                playbackRepeats = {playbackRepeats}
+                                playbackSpeed = {playbackSpeed}
+                                guessesAllowed={guessesAllowed}
+                                answerSet={answerSet}
+                                intervalDirection = {intervalDirection}
+                                answerBoxes = {answerBoxes}
+                            />
+                        </div>
+                    </Collapse>
+            </div>
             <div className="row">
                     {answerOptions.map((element, index) =>
                         <div className="col-md-6">
@@ -247,11 +285,6 @@ function Game() {
                             />
                         </div>
                     )}
-            </div>
-
-            <div>
-                <p>Score:</p>
-                <h1>{score}</h1>
             </div>
         </div>
     )

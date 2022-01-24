@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import Checkbox from './Checkbox';
@@ -9,7 +8,10 @@ function SettingsMenu(props) {
     <div id='settings-menu'>
         <div className='row'>
             {/* game settings */}
-            <div className='col-lg-6'>
+            <div className='col-lg-6 settings-col'>
+                <div className='settings-title'>
+                    Main Settings 
+                </div>
                 <ToggleButtonGroup className="settings-bar" size="sm" type="radio" name="playbackRepeats" value={props.playbackRepeats} onChange={(e) => props.onChange("playbackRepeats", e)}>
                     <ToggleButton className="settings-label-button">Playback Repeats</ToggleButton>
                     <ToggleButton id="repeats-btn-1" variant={props.playbackRepeats === 0 ? 'toggle-active': 'toggle'} value={0}>0</ToggleButton>
@@ -41,19 +43,30 @@ function SettingsMenu(props) {
                     <ToggleButton id="direction-btn-3" variant={props.intervalDirection === 'random' ? 'toggle-active': 'toggle'} value={'random'}>random</ToggleButton>
                     <ToggleButton id="direction-btn-4" variant={props.intervalDirection === 'unison' ? 'toggle-active right': 'toggle right'} value={'unison'}>unison</ToggleButton>
                 </ToggleButtonGroup>
+                <br />
+                <ToggleButtonGroup className="settings-bar" size="sm" type="radio" name="answerBoxes" value={props.answerBoxes} onChange={(e) => props.onChange("answerBoxes", e)}>
+                    <ToggleButton className="settings-label-button">Answer Boxes</ToggleButton>
+                    <ToggleButton id="answerBoxes-btn-1" variant={props.answerBoxes === 2 ? 'toggle-active': 'toggle'} value={2}>2</ToggleButton>
+                    <ToggleButton id="answerBoxes-btn-2" variant={props.answerBoxes === 4 ? 'toggle-active': 'toggle'} value={4}>4</ToggleButton>
+                    <ToggleButton id="answerBoxes-btn-3" variant={props.answerBoxes === 6 ? 'toggle-active': 'toggle'} value={6}>6</ToggleButton>
+                    <ToggleButton id="answerBoxes-btn-4" variant={props.answerBoxes === 8 ? 'toggle-active right': 'toggle right'} value={8}>8</ToggleButton>
+                </ToggleButtonGroup>
             </div>
 
             {/* interval settings */}
-            <div className="col-lg-6">
-                <div className="included-intervals">
-                    <p>Included Intervals</p>
-                    <div>
+            <div className="col-lg-6 settings-col">
+                <div className='settings-title'>
+                    Included Intervals 
+                </div>
+                <div>
                     <Checkbox 
                         onChange={props.onChange}
                         label="First Octave"
                         octave="first-octave"
                         checked={true}
                     />
+                    
+                    
                     <br />
                     <ToggleButtonGroup size="sm" type="checkbox" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                         <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active left interval': 'toggle left interval'} value={0}>P1</ToggleButton>
@@ -96,10 +109,12 @@ function SettingsMenu(props) {
                         <br />
                     </ToggleButtonGroup>
                     </div>
+                    <div className="warning-text">
+                        <span>{props.answerSet.length < 2 ? "MUST INCLUDE AT LEAST 2 INTERVALS" : ""}</span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     );
   }
 

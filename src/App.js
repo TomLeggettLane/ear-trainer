@@ -11,6 +11,7 @@ import $ from 'jquery';
 function App() {
   return (
     <Container fluid id="appContainer">
+      <Sidebar />
       <Game />
     </Container>
   );

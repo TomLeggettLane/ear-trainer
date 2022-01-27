@@ -12,7 +12,7 @@ function AnswerButton(props) {
 
     function handleClick(event) {
         if(!props.isCorrect) {
-            $('#' + props.id).addClass('button-false');
+            $('#' + props.id).addClass('button-false disabled')
             props.incrementGuessCount();
         }
         else {
@@ -20,8 +20,9 @@ function AnswerButton(props) {
         }
         if(props.isCorrect || props.currentGuess + 1 >= props.guessesAllowed) {
             props.playGuessSound(props.isCorrect);
+            $(".answer-button").addClass("disabled");
             setTimeout(function (){
-                $('.button').removeClass('button-correct button-false');
+                $('.answer-button').removeClass('button-correct button-false disabled');
                 props.updateScore(props.isCorrect);
                 props.nextQuestion();
               }, 1000); // How long you want the delay to be, measured in milliseconds.
@@ -29,7 +30,7 @@ function AnswerButton(props) {
     }
 
     return (
-        <div className="button" onClick={handleClick} id={props.id}>
+        <div className="answer-button" onClick={handleClick} id={props.id}>
             <p className="answer-choice">{answerText[props.answerIndex]}</p>
         </div>
     )

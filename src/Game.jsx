@@ -5,15 +5,12 @@ import MusicPlayer from './MusicPlayer';
 import Score from './Score'
 import {Howl, Howler} from 'howler';
 import $ from 'jquery';
-import { Button , Collapse } from 'react-bootstrap';
+import { Button , Collapse, Container} from 'react-bootstrap';
 
 
 function Game() {
-    const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
-    const [settingsOpen, setSettingsOpen] = useState(true);
-    const [currentInterval, setCurrentInterval] = useState(4);
-    const [currentScore, setCurrentScore] = useState(0);
-    const [totalQuestions, setTotalQuestions] = useState(0);
+    const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);   
+    const [answerBoxes, setAnswerBoxes] = useState(4);
     const [answerOptions, setAnswerOptions] = useState([
         {answerIndex: answerSet[4], isCorrect: true},
         {answerIndex: answerSet[1], isCorrect: false},
@@ -21,19 +18,25 @@ function Game() {
         {answerIndex: answerSet[3], isCorrect: false},
     ]);
 
-
+    const [currentInterval, setCurrentInterval] = useState(4);
     const [currentGuess, setCurrentGuess] = useState(0);
-    const [key, setKey] = useState(24 + Math.floor(Math.random() * 36));
     const [currentPlayback, setCurrentPlayback] = useState(0);
     const [playbackRepeats, setPlaybackRepeats] = useState(2);
     const [guessesAllowed, setGuessesAllowed] = useState(3);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
+
+    const [key, setKey] = useState(24 + Math.floor(Math.random() * 36));
     const [intervalDirection, setIntervalDirection] = useState('up');
     const [randomDirection, setRandomDirection] = useState(0);
-    const [answerBoxes, setAnswerBoxes] = useState(4);
+
+    const [currentScore, setCurrentScore] = useState(0);
+    const [totalQuestions, setTotalQuestions] = useState(0);
+
+    const [settingsOpen, setSettingsOpen] = useState(true);
+    const [soundSource, setSoundSource] = useState('./C3-B6.mp3')
 
     const sound = new Howl({
-        src: ['./C3-B6.mp3'],
+        src: [soundSource],
         html5: true,
         rate: playbackSpeed,
         volume: 1.0,
@@ -160,11 +163,17 @@ function Game() {
         setCurrentGuess(0);
         setCurrentPlayback(0);
         shuffleArray(answerSet);
-        setCurrentInterval(answerSet[0]);
-        setKey(24 + Math.floor(Math.random() * 36));
+
         const newQuestion = getNewQuestion();
+        const newInterval = answerSet[0];
+        const newKey = 24 + Math.floor(Math.random() * 36);
+
         setAnswerOptions(newQuestion);
+        setCurrentInterval(newInterval);
+        setKey(newKey);
         setRandomDirection(Math.random());
+
+        playQuestionSound(newKey, newInterval);
     }
 
     function playGuessSound(correct) {
@@ -172,7 +181,7 @@ function Game() {
         guessSound.play();
     }
 
-    function playQuestionSound() {
+    function playQuestionSound(newKey=key, newInterval=currentInterval) {
         const waitTime = 1800/playbackSpeed;
         setCurrentPlayback(currentPlayback+1);
 
@@ -180,37 +189,47 @@ function Game() {
             $('#replayButton').prop('disabled', true);
         }
 
+        const rootNote = newKey.toString();
+        const secondNote = (newKey + newInterval).toString()
+
         switch(intervalDirection) {
             case 'up':
-                sound.play((key).toString())
+                sound.play(rootNote)
                 setTimeout(function() {
-                    sound.play((key + currentInterval).toString());
+                    sound.play(secondNote);
                   }, waitTime);
                 break
             case 'down':
-                sound.play((key + currentInterval).toString())
+                sound.play(secondNote)
                 setTimeout(function() {
-                    sound.play(key.toString());
+                    sound.play(rootNote);
                   }, waitTime);
                 break
             case 'random':
                 if(randomDirection < 0.5) {
-                    sound.play(key.toString());
+                    sound.play(rootNote);
                     setTimeout(function() {
-                        sound.play((key + currentInterval).toString());
+                        sound.play(secondNote);
                       }, waitTime);
                 } else {
-                    sound.play((key + currentInterval).toString())
+                    sound.play(secondNote)
                     setTimeout(function() {
-                        sound.play(key.toString());
+                        sound.play(rootNote);
                       }, waitTime);
                 }
                 break
             case 'unison':
-                sound.play(key.toString());
-                sound.play((key + currentInterval).toString());
+                sound.play(rootNote);
+                sound.play(secondNote);
                 break;
         }
+    }
+
+    function resetStats() {
+        setCurrentGuess(0);
+        setCurrentPlayback(0);
+        setCurrentScore(0);
+        setTotalQuestions(0);
     }
 
     function updateScore(correct) {
@@ -229,24 +248,36 @@ function Game() {
     }
 
     return(
-        <div className="container" id="game">
-            <div className="container" id="game-title">
+        <div id="game">
+            <div className="" id="game-title">
                 <h1>Interval Training</h1>
             </div>
-            <div id='playback'>
-                <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
-                <MusicPlayer 
-                    playQuestionSound={playQuestionSound}
-                />
-            </div>
             <div className="row">
-                <div className="col-sm-6">
+                <div className="col-sm-4">
                     <Score 
                         currentScore={currentScore}
                         totalQuestions={totalQuestions}
                     />
                 </div>
-                <div className="col-sm-6 relative">
+                <div className="col-sm-4">
+                    <div id='playback'>
+                        <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
+                        <MusicPlayer 
+                            playQuestionSound={playQuestionSound}
+                        />
+                    </div>
+                </div>
+                <div className="col-sm-4 relative">
+                    <Button 
+                        id="reset-score-btn"
+                        onClick={() => {
+                            nextQuestion();
+                            resetStats();
+                            
+                            }
+                        }
+                    ><i className="fas fa-redo"></i>
+                    </Button>
                     <Button 
                         id="settings-toggle-btn"
                         onClick={() => setSettingsOpen(!settingsOpen)}
@@ -268,23 +299,27 @@ function Game() {
                         </div>
                     </Collapse>
             </div>
-            <div className="row">
-                    {answerOptions.map((element, index) =>
-                        <div className="col-md-6">
-                            <AnswerButton
-                                key={index}
-                                answerIndex={element.answerIndex}
-                                isCorrect={element.isCorrect}
-                                id={"answerButton-" + index}
-                                nextQuestion={nextQuestion}
-                                updateScore={updateScore}
-                                currentGuess={currentGuess}
-                                incrementGuessCount={incrementGuessCount}
-                                guessesAllowed={guessesAllowed}
-                                playGuessSound={playGuessSound}
-                            />
-                        </div>
-                    )}
+            <div className="answer-section">
+                <div className="answer-boxes">
+                    <div className="row">
+                            {answerOptions.map((element, index) =>
+                                <div key={index} className="col-md-6">
+                                    <AnswerButton
+                                        key={index}
+                                        answerIndex={element.answerIndex}
+                                        isCorrect={element.isCorrect}
+                                        id={"answerButton-" + index}
+                                        nextQuestion={nextQuestion}
+                                        updateScore={updateScore}
+                                        currentGuess={currentGuess}
+                                        incrementGuessCount={incrementGuessCount}
+                                        guessesAllowed={guessesAllowed}
+                                        playGuessSound={playGuessSound}
+                                    />
+                                </div>
+                            )}
+                    </div>
+                </div>
             </div>
         </div>
     )

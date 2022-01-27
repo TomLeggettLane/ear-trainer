@@ -8,6 +8,43 @@ import $ from 'jquery';
 import { Button , Collapse, Container} from 'react-bootstrap';
 
 
+const sound = new Howl({
+    src: ['./C3-B6.mp3'],
+    html5: true,
+    volume: 1.0,
+    loop: false,
+    onload() {
+        soundEngine.init();
+    },
+    onloaderror(e, msg) {
+        console.log('Error', e, msg);
+    }
+});
+
+const correctSound = new Howl({
+    src: ['./correct.mp3'],
+    html5: true,
+    volume: 0.3
+})
+
+const incorrectSound = new Howl({
+    src: ['./incorrect.mp3'],
+    html5: true,
+    volume: 0.2
+})
+
+const soundEngine = {
+    init() {
+        const lengthOfNote = 2000;
+        let timeIndex = 0;
+        //24 - 71 is C3 - B6
+        for(let i=24; i < 72; i++) {
+            sound['_sprite'][i] = [timeIndex, lengthOfNote];
+            timeIndex += lengthOfNote;
+        }
+    }
+}
+
 function Game() {
     const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);   
     const [answerBoxes, setAnswerBoxes] = useState(4);
@@ -33,45 +70,7 @@ function Game() {
     const [totalQuestions, setTotalQuestions] = useState(0);
 
     const [settingsOpen, setSettingsOpen] = useState(true);
-    const [soundSource, setSoundSource] = useState('./C3-B6.mp3')
-
-    const sound = new Howl({
-        src: [soundSource],
-        html5: true,
-        rate: playbackSpeed,
-        volume: 1.0,
-        loop: false,
-        onload() {
-            soundEngine.init();
-        },
-        onloaderror(e, msg) {
-            console.log('Error', e, msg);
-        }
-    });
-
-    const correctSound = new Howl({
-        src: ['./correct.mp3'],
-        html5: true,
-        volume: 0.3
-    })
-
-    const incorrectSound = new Howl({
-        src: ['./incorrect.mp3'],
-        html5: true,
-        volume: 0.2
-    })
-
-    const soundEngine = {
-        init() {
-            const lengthOfNote = 2000;
-            let timeIndex = 0;
-            //24 - 71 is C3 - B6
-            for(let i=24; i < 72; i++) {
-                sound['_sprite'][i] = [timeIndex, lengthOfNote];
-                timeIndex += lengthOfNote;
-            }
-        }
-    }
+    const [playing, setPlaying] = useState(false);
 
     function handleSettingsChange(setting, newValue, checkbox) {
         switch (setting) {
@@ -182,6 +181,13 @@ function Game() {
     }
 
     function playQuestionSound(newKey=key, newInterval=currentInterval) {
+
+        if(playing) {
+            console.log(sound.playing());
+            sound.stop();
+            return;
+        }
+
         const waitTime = 1800/playbackSpeed;
         setCurrentPlayback(currentPlayback+1);
 
@@ -191,6 +197,7 @@ function Game() {
 
         const rootNote = newKey.toString();
         const secondNote = (newKey + newInterval).toString()
+
 
         switch(intervalDirection) {
             case 'up':
@@ -264,6 +271,8 @@ function Game() {
                         <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
                         <MusicPlayer 
                             playQuestionSound={playQuestionSound}
+                            playing={playing}
+                            setPlaying={setPlaying}
                         />
                     </div>
                 </div>

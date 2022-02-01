@@ -237,17 +237,21 @@ border-color: #1cb0f6;
 
 
 #circle-btn {
-  border: 0;
-  position: relative;
-  transform: rotate(45deg);
+  border: 2px solid black;
+  border-radius: 50%;
   height: 150px;
   width: 150px;
-  border-radius: 100%;
-  box-shadow: none;
 }
 
-.music-btn {
-  transform: rotate(-45deg);
+.unclickable {
+  pointer-events: none;
+}
+
+.red {
+  background-color: rgb(161, 131, 131);
+}
+.blue {
+  background-color: #D6E5FA;
 }
 
 #reset-score-btn {

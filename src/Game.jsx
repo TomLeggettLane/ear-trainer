@@ -8,19 +8,6 @@ import $ from 'jquery';
 import { Button , Collapse, Container} from 'react-bootstrap';
 
 
-const sound = new Howl({
-    src: ['./C3-B6.mp3'],
-    html5: true,
-    volume: 1.0,
-    loop: false,
-    onload() {
-        soundEngine.init();
-    },
-    onloaderror(e, msg) {
-        console.log('Error', e, msg);
-    }
-});
-
 const correctSound = new Howl({
     src: ['./correct.mp3'],
     html5: true,
@@ -32,18 +19,6 @@ const incorrectSound = new Howl({
     html5: true,
     volume: 0.2
 })
-
-const soundEngine = {
-    init() {
-        const lengthOfNote = 2000;
-        let timeIndex = 0;
-        //24 - 71 is C3 - B6
-        for(let i=24; i < 72; i++) {
-            sound['_sprite'][i] = [timeIndex, lengthOfNote];
-            timeIndex += lengthOfNote;
-        }
-    }
-}
 
 function Game() {
     const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);   
@@ -57,12 +32,11 @@ function Game() {
 
     const [currentInterval, setCurrentInterval] = useState(4);
     const [currentGuess, setCurrentGuess] = useState(0);
-    const [currentPlayback, setCurrentPlayback] = useState(0);
     const [playbackRepeats, setPlaybackRepeats] = useState(2);
     const [guessesAllowed, setGuessesAllowed] = useState(3);
     const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
-    const [key, setKey] = useState(24 + Math.floor(Math.random() * 36));
+    const [currentKey, setCurrentKey] = useState(24 + Math.floor(Math.random() * 36));
     const [intervalDirection, setIntervalDirection] = useState('up');
     const [randomDirection, setRandomDirection] = useState(0);
 
@@ -70,7 +44,6 @@ function Game() {
     const [totalQuestions, setTotalQuestions] = useState(0);
 
     const [settingsOpen, setSettingsOpen] = useState(true);
-    const [playing, setPlaying] = useState(false);
 
     function handleSettingsChange(setting, newValue, checkbox) {
         switch (setting) {
@@ -87,35 +60,11 @@ function Game() {
                 if(answerSet.length >= newValue) {
                     setAnswerBoxes(newValue);
                 } else {
-                    alert("Not enough intervals selected for " + newValue + " answer boxes!");
+                    setAnswerBoxes(2);
                 }
                 break;   
             case "answerSet":
-                const tempAnswerSet = [...answerSet];
-
-                if(newValue === "first-octave" || newValue === "second-octave") {
-                    if(newValue === "first-octave") {
-                        for(let i = 0; i < 12; i++) {
-                            const index = tempAnswerSet.indexOf(i);
-                            if (index === -1 && checkbox) {
-                                tempAnswerSet.push(i);
-                            } else if(index > -1 && !checkbox) {
-                                tempAnswerSet.splice(index, 1);   
-                            }
-                        }
-                    } else if(newValue === "second-octave") {
-                        for(let i = 12; i < 24; i++) {
-                            const index = tempAnswerSet.indexOf(i);
-                            if (index === -1 && checkbox) {
-                                tempAnswerSet.push(i);
-                            } else if(index > -1 && !checkbox) {
-                                tempAnswerSet.splice(index, 1);   
-                            }
-                        }
-                    }
-                    newValue = tempAnswerSet;
-                }
-                setAnswerSet(newValue);
+                setAnswerSet(getNewAnswerSet([...answerSet], newValue, checkbox));
                 break;
             case "intervalDirection":
                 setIntervalDirection(newValue);
@@ -123,14 +72,30 @@ function Game() {
         }
     }
 
-    function shuffleArray(array) {
-        /* Randomize array in-place using Durstenfeld shuffle algorithm */
-        for (var i = array.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-        }
+    function getNewAnswerSet(tempAnswerSet, newValue, checkbox) {
+        if(newValue === "first-octave" || newValue === "second-octave") {
+            if(newValue === "first-octave") {
+                for(let i = 0; i < 12; i++) {
+                    const index = tempAnswerSet.indexOf(i);
+                    if (index === -1 && checkbox) {
+                        tempAnswerSet.push(i);
+                    } else if(index > -1 && !checkbox) {
+                        tempAnswerSet.splice(index, 1);   
+                    }
+                }
+            } else {
+                for(let i = 12; i < 24; i++) {
+                    const index = tempAnswerSet.indexOf(i);
+                    if (index === -1 && checkbox) {
+                        tempAnswerSet.push(i);
+                    } else if(index > -1 && !checkbox) {
+                        tempAnswerSet.splice(index, 1);   
+                    }
+                }
+            }
+            newValue = tempAnswerSet;
+        } 
+        return newValue;
     }
 
     function getNewQuestion() {
@@ -144,7 +109,6 @@ function Game() {
             alert('Only 1 interval selected!');
             return;
         } else {
-            console.log(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
             if(answerSet.length < answerBoxes) {
                 setAnswerBoxes(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
             }
@@ -160,7 +124,6 @@ function Game() {
     function nextQuestion() {
         $('#replayButton').prop('disabled', false);
         setCurrentGuess(0);
-        setCurrentPlayback(0);
         shuffleArray(answerSet);
 
         const newQuestion = getNewQuestion();
@@ -169,10 +132,8 @@ function Game() {
 
         setAnswerOptions(newQuestion);
         setCurrentInterval(newInterval);
-        setKey(newKey);
+        setCurrentKey(newKey);
         setRandomDirection(Math.random());
-
-        playQuestionSound(newKey, newInterval);
     }
 
     function playGuessSound(correct) {
@@ -180,63 +141,12 @@ function Game() {
         guessSound.play();
     }
 
-    function playQuestionSound(newKey=key, newInterval=currentInterval) {
-
-        if(playing) {
-            console.log(sound.playing());
-            sound.stop();
-            return;
-        }
-
-        const waitTime = 1800/playbackSpeed;
-        setCurrentPlayback(currentPlayback+1);
-
-        if(currentPlayback >= playbackRepeats) {
-            $('#replayButton').prop('disabled', true);
-        }
-
-        const rootNote = newKey.toString();
-        const secondNote = (newKey + newInterval).toString()
-
-
-        switch(intervalDirection) {
-            case 'up':
-                sound.play(rootNote)
-                setTimeout(function() {
-                    sound.play(secondNote);
-                  }, waitTime);
-                break
-            case 'down':
-                sound.play(secondNote)
-                setTimeout(function() {
-                    sound.play(rootNote);
-                  }, waitTime);
-                break
-            case 'random':
-                if(randomDirection < 0.5) {
-                    sound.play(rootNote);
-                    setTimeout(function() {
-                        sound.play(secondNote);
-                      }, waitTime);
-                } else {
-                    sound.play(secondNote)
-                    setTimeout(function() {
-                        sound.play(rootNote);
-                      }, waitTime);
-                }
-                break
-            case 'unison':
-                sound.play(rootNote);
-                sound.play(secondNote);
-                break;
-        }
-    }
-
     function resetStats() {
         setCurrentGuess(0);
-        setCurrentPlayback(0);
         setCurrentScore(0);
         setTotalQuestions(0);
+        $("#circle-btn").removeClass("red");
+        $('.answer-button').removeClass('button-correct button-false disabled');
     }
 
     function updateScore(correct) {
@@ -268,11 +178,14 @@ function Game() {
                 </div>
                 <div className="col-sm-4">
                     <div id='playback'>
-                        <button id="replayButton" onClick={playQuestionSound}>👂🏻</button>
                         <MusicPlayer 
-                            playQuestionSound={playQuestionSound}
-                            playing={playing}
-                            setPlaying={setPlaying}
+                            intervalDirection={intervalDirection}
+                            playbackSpeed={playbackSpeed}
+                            randomDirection={randomDirection}
+                            currentInterval={currentInterval}
+                            currentKey={currentKey}
+                            totalQuestions={totalQuestions}
+                            playbackRepeats = {playbackRepeats}
                         />
                     </div>
                 </div>
@@ -280,9 +193,8 @@ function Game() {
                     <Button 
                         id="reset-score-btn"
                         onClick={() => {
-                            nextQuestion();
                             resetStats();
-                            
+                            nextQuestion();
                             }
                         }
                     ><i className="fas fa-redo"></i>
@@ -304,6 +216,7 @@ function Game() {
                                 answerSet={answerSet}
                                 intervalDirection = {intervalDirection}
                                 answerBoxes = {answerBoxes}
+                                
                             />
                         </div>
                     </Collapse>
@@ -315,6 +228,7 @@ function Game() {
                                 <div key={index} className="col-md-6">
                                     <AnswerButton
                                         key={index}
+                                        hotkey={index+1}
                                         answerIndex={element.answerIndex}
                                         isCorrect={element.isCorrect}
                                         id={"answerButton-" + index}
@@ -333,5 +247,16 @@ function Game() {
         </div>
     )
 }
+
+function shuffleArray(array) {
+    /* Randomize array in-place using Durstenfeld shuffle algorithm */
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+    
 
 export default Game;

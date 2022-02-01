@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import $ from 'jquery';
 
 function AnswerButton(props) {
@@ -8,9 +8,30 @@ function AnswerButton(props) {
                         'Perfect Octave', 'Minor 9th', 'Major 9th', 'Minor 3rd (8va)',
                         'Major 3rd (8va)', 'Perfect 11th', '#11', 'Perfect 5th (8va)',
                         'Minor 13th', 'Major 13th', 'Minor 7th (8va)', 'Major 7th (8va)']
+    
+
+    const handleKeyPress = useCallback((event) => {
+        const key = event.key;
+        if (key === '1' || key === '2' || key ===  '3' || key === '4') {   
+            $('#answerButton-' + (key - 1)).addClass('button-false');
+        }
+        }, 
+    []);
+
+    useEffect(() => {
+        // attach the event listener
+        document.addEventListener('keydown', handleKeyPress);
+
+        // remove the event listener
+        return () => {
+        document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [handleKeyPress]);
 
 
-    function handleClick(event) {
+    function handleClick() {
+        console.log(props);
+        console.log(props.currentGuess, props.guessesAllowed);
         if(!props.isCorrect) {
             $('#' + props.id).addClass('button-false disabled')
             props.incrementGuessCount();
@@ -31,7 +52,7 @@ function AnswerButton(props) {
 
     return (
         <div className="answer-button" onClick={handleClick} id={props.id}>
-            <p className="answer-choice">{answerText[props.answerIndex]}</p>
+            <span>{props.hotkey}.</span><p className="answer-choice">{answerText[props.answerIndex]}</p>
         </div>
     )
 }

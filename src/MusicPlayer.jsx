@@ -16,8 +16,16 @@ function MIDItoNoteName(MIDI) {
 
 var playbacks = 0;
 
+const playbackSpeedSettings = [{noteValue: "1n", noteDuration: 2.5}, {noteValue: "2n", noteDuration: 1.5},
+                              {noteValue: "8n", noteDuration: 1}, {noteValue: "16n", noteDuration: 0.5}]
+
+export function resetPlaybacks() {
+    playbacks = 0;
+}
+
 function MusicPlayer(props) {
     const {intervalDirection, playbackSpeed, randomDirection, currentInterval, currentKey, totalQuestions, playbackRepeats} = props;
+
 
     useEffect(() => {
         window.addEventListener("keydown", (event) => {
@@ -33,42 +41,46 @@ function MusicPlayer(props) {
     }, [totalQuestions])
 
     function playQuestionSound() {
+        const noteValue = playbackSpeedSettings[playbackSpeed].noteValue;
+        const noteDuration = playbackSpeedSettings[playbackSpeed].noteDuration;
+
         if(playbacks <= playbackRepeats || playbackRepeats === 3) {
             $("#circle-btn").addClass("unclickable");
             $("#circle-btn").addClass("blue");
-            const now = Tone.now();
-            
+    
             const note1 = MIDItoNoteName(currentKey);
             const note2 = MIDItoNoteName(currentKey + currentInterval);
 
+            const now = Tone.now();
+
             switch(intervalDirection) {
                 case 'up':
-                    synth.triggerAttackRelease(note1, "8n", now);
-                    synth.triggerAttackRelease(note2, "8n", now+playbackSpeed);
+                    synth.triggerAttackRelease(note1, noteValue, now);
+                    synth.triggerAttackRelease(note2, noteValue, now+noteDuration);
                     break
                 case 'down':
-                    synth.triggerAttackRelease(note2, "8n", now);
-                    synth.triggerAttackRelease(note1, "8n", now+playbackSpeed);
+                    synth.triggerAttackRelease(note2, noteValue, now);
+                    synth.triggerAttackRelease(note1, noteValue, now+noteDuration);
                     break
                 case 'random':
                     if(randomDirection < 0.5) {
-                    synth.triggerAttackRelease(note1, "8n", now);
-                    synth.triggerAttackRelease(note2, "8n", now+playbackSpeed);
+                    synth.triggerAttackRelease(note1, noteValue, now);
+                    synth.triggerAttackRelease(note2, noteValue, now+noteDuration);
                     } else {
-                    synth.triggerAttackRelease(note2, "8n", now);
-                    synth.triggerAttackRelease(note1, "8n", now+playbackSpeed);
+                    synth.triggerAttackRelease(note2, noteValue, now);
+                    synth.triggerAttackRelease(note1, noteValue, now+noteDuration);
                     }
                     break
                 case 'unison':
-                    synth.triggerAttackRelease(note1, "8n", now);
-                    synth.triggerAttackRelease(note2, "8n", now);
+                    synth.triggerAttackRelease(note1, noteValue, now);
+                    synth.triggerAttackRelease(note2, noteValue, now);
                     break;
             }
             playbacks++;
             setTimeout(function (){
                 $("#circle-btn").removeClass("unclickable");
                 $("#circle-btn").removeClass("blue");
-                }, 1500);
+                }, noteDuration * 1750);
         } 
         if(playbacks > playbackRepeats && playbackRepeats !== 3) {
             $("#circle-btn").addClass("red");
@@ -78,7 +90,8 @@ function MusicPlayer(props) {
     return(
         <>
         <button id="circle-btn" onClick={playQuestionSound}>
-        { <i className="fas fa-play music-btn"></i> }</button>
+            <i className="fas fa-play music-btn"></i> 
+        </button>
         </>
     )
 }

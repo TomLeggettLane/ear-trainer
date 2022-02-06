@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import AnswerButton from './AnswerButton';
 import SettingsMenu from './SettingsMenu';
-import MusicPlayer from './MusicPlayer';
+import MusicPlayer, { resetPlaybacks } from './MusicPlayer';
 import Score from './Score'
 import {Howl, Howler} from 'howler';
 import $ from 'jquery';
@@ -11,7 +11,7 @@ import { Button , Collapse, Container} from 'react-bootstrap';
 const correctSound = new Howl({
     src: ['./correct.mp3'],
     html5: true,
-    volume: 0.3
+    volume: 0.2
 })
 
 const incorrectSound = new Howl({
@@ -23,20 +23,15 @@ const incorrectSound = new Howl({
 function Game() {
     const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);   
     const [answerBoxes, setAnswerBoxes] = useState(4);
-    const [answerOptions, setAnswerOptions] = useState([
-        {answerIndex: answerSet[4], isCorrect: true},
-        {answerIndex: answerSet[1], isCorrect: false},
-        {answerIndex: answerSet[2], isCorrect: false},
-        {answerIndex: answerSet[3], isCorrect: false},
-    ]);
+    const [answerOptions, setAnswerOptions] = useState([]);
 
     const [currentInterval, setCurrentInterval] = useState(4);
     const [currentGuess, setCurrentGuess] = useState(0);
     const [playbackRepeats, setPlaybackRepeats] = useState(2);
     const [guessesAllowed, setGuessesAllowed] = useState(3);
-    const [playbackSpeed, setPlaybackSpeed] = useState(1);
+    const [playbackSpeed, setPlaybackSpeed] = useState(2);
 
-    const [currentKey, setCurrentKey] = useState(24 + Math.floor(Math.random() * 36));
+    const [currentKey, setCurrentKey] = useState(36 + Math.floor(Math.random() * 24));
     const [intervalDirection, setIntervalDirection] = useState('up');
     const [randomDirection, setRandomDirection] = useState(0);
 
@@ -44,6 +39,10 @@ function Game() {
     const [totalQuestions, setTotalQuestions] = useState(0);
 
     const [settingsOpen, setSettingsOpen] = useState(true);
+
+    useEffect(() => {
+        nextQuestion();
+    }, []);
 
     function handleSettingsChange(setting, newValue, checkbox) {
         switch (setting) {
@@ -98,41 +97,40 @@ function Game() {
         return newValue;
     }
 
-    function getNewQuestion() {
+    function getNewQuestion(answerSet) {
         const answers = [];
-
-        if(answerSet.length === 0) {
-            alert('No intervals selected!');
-            answers.push({answerIndex: "Please select at least 2 intervals", isCorrect: false});
-            return;
-        } else if(answerSet.length === 1) {
-            alert('Only 1 interval selected!');
-            return;
-        } else {
-            if(answerSet.length < answerBoxes) {
-                setAnswerBoxes(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
-            }
-            for(let i=0; i < Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes); i++) {
-                answers.push({answerIndex: answerSet[i], isCorrect: false})
-            }
-            answers[0].isCorrect = true;
-            shuffleArray(answers)
+        if(answerSet.length < answerBoxes) {
+            setAnswerBoxes(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
         }
+        for(let i=0; i < Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes); i++) {
+            answers.push({answerIndex: answerSet[i], isCorrect: false})
+        }
+        answers[0].isCorrect = true;
         return answers;
+    }
+
+    function getValidAnswerSet() {
+        const tempAnswerSet = [0,2,4,5,7,9,11]
+        if(answerSet.length <= 1) {
+            setAnswerSet([0,2,4,5,7,9,11]);
+            alert('Please select at least 2 intervals');
+            return tempAnswerSet;
+        } else {
+            return answerSet;
+        }
     }
 
     function nextQuestion() {
         $('#replayButton').prop('disabled', false);
         setCurrentGuess(0);
-        shuffleArray(answerSet);
-
-        const newQuestion = getNewQuestion();
-        const newInterval = answerSet[0];
-        const newKey = 24 + Math.floor(Math.random() * 36);
-
+        const newAnswerSet = getValidAnswerSet();
+        shuffleArray(newAnswerSet);
+        const newQuestion = getNewQuestion(newAnswerSet);
         setAnswerOptions(newQuestion);
-        setCurrentInterval(newInterval);
-        setCurrentKey(newKey);
+        console.log("newAnswerSet", newAnswerSet)
+        setCurrentInterval(newAnswerSet[0]);
+        shuffleArray(newQuestion);
+        setCurrentKey(36 + Math.floor(Math.random() * 24));
         setRandomDirection(Math.random());
     }
 
@@ -142,6 +140,7 @@ function Game() {
     }
 
     function resetStats() {
+        resetPlaybacks();
         setCurrentGuess(0);
         setCurrentScore(0);
         setTotalQuestions(0);

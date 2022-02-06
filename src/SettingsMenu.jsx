@@ -22,10 +22,10 @@ function SettingsMenu(props) {
                 <br />
                 <ToggleButtonGroup className="settings-bar" size="sm" type="radio" name="playbackSpeed" value={props.playbackSpeed} onChange={(e) => props.onChange("playbackSpeed", e)}>
                     <ToggleButton className="settings-label-button">Playback Speed</ToggleButton>
-                    <ToggleButton id="speed-btn-1" variant={props.playbackSpeed === 0.5 ? 'toggle-active': 'toggle'} value={0.5}>0.5x</ToggleButton>
-                    <ToggleButton id="speed-btn-2" variant={props.playbackSpeed === 0.75 ? 'toggle-active': 'toggle'} value={0.75}>0.75x</ToggleButton>
-                    <ToggleButton id="speed-btn-3" variant={props.playbackSpeed === 1 ? 'toggle-active': 'toggle'} value={1}>1x</ToggleButton>
-                    <ToggleButton id="speed-btn-4" variant={props.playbackSpeed === 2 ? 'toggle-active right': 'toggle right'} value={2}>2x</ToggleButton>
+                    <ToggleButton id="speed-btn-1" variant={props.playbackSpeed === 0 ? 'toggle-active': 'toggle'} value={0}>0.5x</ToggleButton>
+                    <ToggleButton id="speed-btn-2" variant={props.playbackSpeed === 1 ? 'toggle-active': 'toggle'} value={1}>0.75x</ToggleButton>
+                    <ToggleButton id="speed-btn-3" variant={props.playbackSpeed === 2 ? 'toggle-active': 'toggle'} value={2}>1x</ToggleButton>
+                    <ToggleButton id="speed-btn-4" variant={props.playbackSpeed === 3 ? 'toggle-active right': 'toggle right'} value={3}>2x</ToggleButton>
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup className="settings-bar" size="sm" type="radio" name="guessesAllowed" value={props.guessesAllowed} onChange={(e) => props.onChange("guessesAllowed", e)}>

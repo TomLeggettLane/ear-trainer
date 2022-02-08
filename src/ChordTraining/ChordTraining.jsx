@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import AnswerButton from './AnswerButton';
+import AnswerButton from '../AnswerButton';
 import SettingsMenu from './SettingsMenu';
-import MusicPlayer, { resetPlaybacks } from './MusicPlayer';
+import MusicPlayer, { resetPlaybacks } from '../MusicPlayer';
 import Score from './Score'
-import {Howl, Howler} from 'howler';
+import { Howl, Howler } from 'howler';
 import $ from 'jquery';
 import { Button , Collapse, Container} from 'react-bootstrap';
 
@@ -20,12 +20,50 @@ const incorrectSound = new Howl({
     volume: 0.2
 })
 
-function Game() {
-    const [answerSet, setAnswerSet] = useState([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);   
+const chords = [
+    // triads
+        { chordName : "Minor triad", chordIntervals : [0, 3, 7], chordFamily : "Triad", difficulty: "easy"},
+        { chordName : "Major triad", chordIntervals : [0, 4, 7], chordFamily : "Triad", difficulty: "easy" },
+        { chordName : "Augmented triad", chordIntervals : [0, 4, 8], chordFamily : "Triad", difficulty: "easy" },
+        { chordName : "Diminished triad", chordIntervals : [0, 3, 6], chordFamily : "Triad", difficulty: "easy" },
+    //sus
+        { chordName : "Sus2", chordIntervals : [0, 2, 7], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Sus4", chordIntervals : [0, 5, 7], chordFamily : "7th", difficulty: "medium"},
+    // 6th's
+        { chordName : "Minor 6th", chordIntervals : [0, 3, 7, 9], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Major 6th", chordIntervals : [0, 4, 7, 9], chordFamily : "7th", difficulty: "medium"},
+    // 7th's
+        { chordName : "Minor 7th", chordIntervals : [0, 3, 7, 10], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Major 7th", chordIntervals : [0, 4, 7, 11], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Dominant 7th", chordIntervals : [0, 4, 7, 10], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Minor-Major 7th", chordIntervals : [0, 3, 7, 11], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Augmented-major 7th", chordIntervals : [0, 4, 8, 11], chordFamily : "7th", difficulty: "hard" },
+        { chordName : "Augmented 7th", chordIntervals : [0, 4, 8, 10], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Half-diminished 7th", chordIntervals : [0, 3, 6, 10], chordFamily : "7th", difficulty: "medium" },
+        { chordName : "Diminished 7th", chordIntervals : [0, 3, 6, 9], chordFamily : "7th", difficulty: "hard" },
+        { chordName : "7th flat 5", chordIntervals : [0, 4, 6, 10], chordFamily : "7th", difficulty: "hard" },
+    //9th's
+        { chordName : "Minor 9th", chordIntervals : [0, 3, 7, 10, 14], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Major 9th", chordIntervals : [0, 4, 7, 11, 14], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Dominant 9th", chordIntervals : [0, 4, 7, 10, 14], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Minor add9", chordIntervals : [0, 3, 7, 14], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Major add9", chordIntervals : [0, 4, 7, 14], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Minor 6/9", chordIntervals : [0, 3, 7, 9, 14], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Major 6/9", chordIntervals : [0, 4, 7, 9, 14], chordFamily : "7th", difficulty: "hard"},
+    //11th's
+        { chordName : "11th", chordIntervals : [0, 4, 7, 10, 14, 17], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Major 7th #11", chordIntervals : [0, 4, 7, 11, 18], chordFamily : "7th", difficulty: "hard"},
+    //13th's
+        { chordName : "Major 13th", chordIntervals : [0, 4, 7, 11, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Major 13th", chordIntervals : [0, 3, 7, 10, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
+]
+
+function ChordTraining() {
+    const [answerSet, setAnswerSet] = useState(chords);   
     const [answerBoxes, setAnswerBoxes] = useState(4);
     const [answerOptions, setAnswerOptions] = useState([]);
 
-    const [currentInterval, setCurrentInterval] = useState(4);
+    const [currentChord, setCurrentChord] = useState(chords[0]);
     const [currentGuess, setCurrentGuess] = useState(0);
     const [playbackRepeats, setPlaybackRepeats] = useState(2);
     const [guessesAllowed, setGuessesAllowed] = useState(3);
@@ -72,28 +110,28 @@ function Game() {
     }
 
     function getNewAnswerSet(tempAnswerSet, newValue, checkbox) {
-        if(newValue === "first-octave" || newValue === "second-octave") {
-            if(newValue === "first-octave") {
-                for(let i = 0; i < 12; i++) {
-                    const index = tempAnswerSet.indexOf(i);
-                    if (index === -1 && checkbox) {
-                        tempAnswerSet.push(i);
-                    } else if(index > -1 && !checkbox) {
-                        tempAnswerSet.splice(index, 1);   
-                    }
-                }
-            } else {
-                for(let i = 12; i < 24; i++) {
-                    const index = tempAnswerSet.indexOf(i);
-                    if (index === -1 && checkbox) {
-                        tempAnswerSet.push(i);
-                    } else if(index > -1 && !checkbox) {
-                        tempAnswerSet.splice(index, 1);   
-                    }
-                }
-            }
-            newValue = tempAnswerSet;
-        } 
+        // if(newValue === "first-octave" || newValue === "second-octave") {
+        //     if(newValue === "first-octave") {
+        //         for(let i = 0; i < 12; i++) {
+        //             const index = tempAnswerSet.indexOf(i);
+        //             if (index === -1 && checkbox) {
+        //                 tempAnswerSet.push(i);
+        //             } else if(index > -1 && !checkbox) {
+        //                 tempAnswerSet.splice(index, 1);   
+        //             }
+        //         }
+        //     } else {
+        //         for(let i = 12; i < 24; i++) {
+        //             const index = tempAnswerSet.indexOf(i);
+        //             if (index === -1 && checkbox) {
+        //                 tempAnswerSet.push(i);
+        //             } else if(index > -1 && !checkbox) {
+        //                 tempAnswerSet.splice(index, 1);   
+        //             }
+        //         }
+        //     }
+        //     newValue = tempAnswerSet;
+        // } 
         return newValue;
     }
 
@@ -110,9 +148,9 @@ function Game() {
     }
 
     function getValidAnswerSet() {
-        const tempAnswerSet = [0,2,4,5,7,9,11]
+        const tempAnswerSet = [chords.minorTriad, chords.majorTriad];  
         if(answerSet.length <= 1) {
-            setAnswerSet([0,2,4,5,7,9,11]);
+            setAnswerSet([chords.minorTriad, chords.majorTriad]);
             alert('Please select at least 2 intervals');
             return tempAnswerSet;
         } else {
@@ -127,11 +165,11 @@ function Game() {
         shuffleArray(newAnswerSet);
         const newQuestion = getNewQuestion(newAnswerSet);
         setAnswerOptions(newQuestion);
-        console.log("newAnswerSet", newAnswerSet)
-        setCurrentInterval(newAnswerSet[0]);
+        setCurrentChord(newAnswerSet[0]);
         shuffleArray(newQuestion);
         setCurrentKey(36 + Math.floor(Math.random() * 24));
         setRandomDirection(Math.random());
+        console.log(newAnswerSet[0].chordName)
     }
 
     function playGuessSound(correct) {
@@ -163,10 +201,14 @@ function Game() {
         setCurrentGuess(currentGuess+1);
     }
 
+    function makePopupVisible() {
+        document.getElementById('settings-pop').classList.toggle("show");
+    }
+
     return(
         <div id="game">
             <div className="" id="game-title">
-                <h1>Interval Training</h1>
+                <h1>Chord Training</h1>
             </div>
             <div className="row">
                 <div className="col-sm-4">
@@ -181,10 +223,11 @@ function Game() {
                             intervalDirection={intervalDirection}
                             playbackSpeed={playbackSpeed}
                             randomDirection={randomDirection}
-                            currentInterval={currentInterval}
+                            currentChord={currentChord}
                             currentKey={currentKey}
                             totalQuestions={totalQuestions}
                             playbackRepeats = {playbackRepeats}
+                            chordOrInterval = "chord"
                         />
                     </div>
                 </div>
@@ -200,6 +243,10 @@ function Game() {
                     </Button>
                     <Button 
                         id="settings-toggle-btn"
+                        onClick={makePopupVisible}
+                    ><i className="fas fa-sliders-h"></i></Button>
+                    <Button 
+                        id="popup-btn"
                         onClick={() => setSettingsOpen(!settingsOpen)}
                         aria-controls="example-collapse-text"
                         aria-expanded={settingsOpen}
@@ -220,6 +267,20 @@ function Game() {
                         </div>
                     </Collapse>
             </div>
+            <div className="popup">
+                <div className="popuptext" id="settings-pop">
+                <SettingsMenu
+                                onChange={handleSettingsChange}
+                                playbackRepeats = {playbackRepeats}
+                                playbackSpeed = {playbackSpeed}
+                                guessesAllowed={guessesAllowed}
+                                answerSet={answerSet}
+                                intervalDirection = {intervalDirection}
+                                answerBoxes = {answerBoxes}
+                                
+                            />
+                </div>
+            </div>
             <div className="answer-section">
                 <div className="answer-boxes">
                     <div className="row">
@@ -228,7 +289,7 @@ function Game() {
                                     <AnswerButton
                                         key={index}
                                         hotkey={index+1}
-                                        answerIndex={element.answerIndex}
+                                        answerText={element.answerIndex.chordName}
                                         isCorrect={element.isCorrect}
                                         id={"answerButton-" + index}
                                         nextQuestion={nextQuestion}
@@ -258,4 +319,4 @@ function shuffleArray(array) {
 }
     
 
-export default Game;
+export default ChordTraining;

@@ -1,10 +1,9 @@
 import React from 'react';
+import IntervalTraining from './IntervalTraining/IntervalTraining';
+import ChordTraining from './ChordTraining/ChordTraining';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
-import Sidebar from './Sidebar';
-import Footer from './Footer';
-import Game from './Game';
-import $ from 'jquery';
+import Sidebar from './Sidebar';;
 
 
 
@@ -12,7 +11,8 @@ function App() {
   return (
     <Container fluid id="appContainer">
       <Sidebar />
-      <Game />
+      {/* <IntervalTraining /> */}
+      <ChordTraining />
     </Container>
   );
 }

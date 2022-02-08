@@ -22,18 +22,28 @@ const playbackSpeedSettings = [{noteValue: "1n", noteDuration: 2.5}, {noteValue:
 export function resetPlaybacks() {
     playbacks = 0;
 }
-
 function MusicPlayer(props) {
-    const {intervalDirection, playbackSpeed, randomDirection, currentInterval, currentKey, totalQuestions, playbackRepeats} = props;
+    const {intervalDirection, playbackSpeed, randomDirection, currentInterval, currentKey, totalQuestions, playbackRepeats, chordOrInterval, currentChord} = props;
 
+    // function handleKeyDown(event) {
+    //     if(event.key === " ") {
+    //         playQuestionSound();
+    //         console.log("blaaaaaaaaah")
+    //     }
+    // }
+    
+    // FIGURE OUT HOW TO ADD HOTKEY FOR SPACEBAR!
 
-    useEffect(() => {
-        window.addEventListener("keydown", (event) => {
-            if(event.key === " ") {
-                playQuestionSound();
-            }
-        })},[]
-    );
+    // useEffect(() => {
+    //     playbacks = 0;
+    //     $("#circle-btn").removeClass("red");
+    //     window.addEventListener("keydown", (event) => {
+    //         handleKeyDown(event)
+    //     })
+    //     return () => {
+    //             window.removeEventListener('keydown', handleKeyDown);
+    //         };
+    //     });
 
     useEffect(() => {
         playbacks = 0;
@@ -47,35 +57,21 @@ function MusicPlayer(props) {
         if(playbacks <= playbackRepeats || playbackRepeats === 3) {
             $("#circle-btn").addClass("unclickable");
             $("#circle-btn").addClass("blue");
-    
-            const note1 = MIDItoNoteName(currentKey);
-            const note2 = MIDItoNoteName(currentKey + currentInterval);
 
-            const now = Tone.now();
+            if (chordOrInterval === "interval") {
+                const note1 = MIDItoNoteName(currentKey);
+                const note2 = MIDItoNoteName(currentKey + currentInterval);
+                playInterval(note1, note2, noteValue, noteDuration);
+            } else if (chordOrInterval === "chord") {
+                const chordArray = [];
 
-            switch(intervalDirection) {
-                case 'up':
-                    synth.triggerAttackRelease(note1, noteValue, now);
-                    synth.triggerAttackRelease(note2, noteValue, now+noteDuration);
-                    break
-                case 'down':
-                    synth.triggerAttackRelease(note2, noteValue, now);
-                    synth.triggerAttackRelease(note1, noteValue, now+noteDuration);
-                    break
-                case 'random':
-                    if(randomDirection < 0.5) {
-                    synth.triggerAttackRelease(note1, noteValue, now);
-                    synth.triggerAttackRelease(note2, noteValue, now+noteDuration);
-                    } else {
-                    synth.triggerAttackRelease(note2, noteValue, now);
-                    synth.triggerAttackRelease(note1, noteValue, now+noteDuration);
-                    }
-                    break
-                case 'unison':
-                    synth.triggerAttackRelease(note1, noteValue, now);
-                    synth.triggerAttackRelease(note2, noteValue, now);
-                    break;
+                for(let i=0; i < currentChord.chordIntervals.length; i++) {
+                    chordArray.push(MIDItoNoteName(currentChord.chordIntervals[i] + currentKey));
+                }
+
+                playChord(chordArray, noteValue, noteDuration);
             }
+
             playbacks++;
             setTimeout(function (){
                 $("#circle-btn").removeClass("unclickable");
@@ -87,6 +83,74 @@ function MusicPlayer(props) {
         }
     }
 
+    function playInterval(note1, note2, noteValue, noteDuration) {
+        const now = Tone.now();
+
+        switch(intervalDirection) {
+            case 'up':
+                synth.triggerAttackRelease(note1, noteValue, now);
+                synth.triggerAttackRelease(note2, noteValue, now+noteDuration);
+                break
+            case 'down':
+                synth.triggerAttackRelease(note2, noteValue, now);
+                synth.triggerAttackRelease(note1, noteValue, now+noteDuration);
+                break
+            case 'random':
+                if(randomDirection < 0.5) {
+                synth.triggerAttackRelease(note1, noteValue, now);
+                synth.triggerAttackRelease(note2, noteValue, now+noteDuration);
+                } else {
+                synth.triggerAttackRelease(note2, noteValue, now);
+                synth.triggerAttackRelease(note1, noteValue, now+noteDuration);
+                }
+                break
+            case 'unison':
+                synth.triggerAttackRelease(note1, noteValue, now);
+                synth.triggerAttackRelease(note2, noteValue, now);
+                break;
+        }
+    }
+
+    function playChord(chordArray, noteValue, noteDuration) {
+        synth.set({ volume: -6 - 2 * (chordArray.length)});
+        const now = Tone.now();
+
+        switch(intervalDirection) {
+            case "up" : {
+                chordArray.forEach((element, index) => {
+                    synth.triggerAttack(element, now + 0.5 * index);
+                })
+                synth.triggerRelease(chordArray, now + chordArray.length);
+                break
+            }
+            case "down" : {
+                chordArray.slice().reverse().forEach((element, index) => {
+                    synth.triggerAttack(element, now + 0.5 * index);
+                })
+                synth.triggerRelease(chordArray, now + chordArray.length);
+                break
+            }
+            case "random" : {
+                if(randomDirection < 0.5) {
+                    chordArray.forEach((element, index) => {
+                        synth.triggerAttack(element, now + 0.5 * index);
+                    })
+                    synth.triggerRelease(chordArray, now + chordArray.length);
+                } else {
+                    chordArray.slice().reverse().forEach((element, index) => {
+                    synth.triggerAttack(element, now + 0.5 * index);
+                    })
+                    synth.triggerRelease(chordArray, now + chordArray.length);
+                }
+                break
+            }
+            case "unison" : {
+                synth.triggerAttackRelease(chordArray, chordArray.length/2);
+                return
+            }
+        }
+    }
+        
     return(
         <>
         <button id="circle-btn" onClick={playQuestionSound}>

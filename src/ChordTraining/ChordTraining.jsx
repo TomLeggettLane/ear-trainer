@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import AnswerButton from '../AnswerButton';
-import SettingsMenu from './SettingsMenu';
+import SettingsMenuTest from './SettingsMenuTest';
 import MusicPlayer, { resetPlaybacks } from '../MusicPlayer';
 import Score from './Score'
 import { Howl, Howler } from 'howler';
@@ -55,7 +55,7 @@ const chords = [
         { chordName : "Major 7th #11", chordIntervals : [0, 4, 7, 11, 18], chordFamily : "7th", difficulty: "hard"},
     //13th's
         { chordName : "Major 13th", chordIntervals : [0, 4, 7, 11, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
-        { chordName : "Major 13th", chordIntervals : [0, 3, 7, 10, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Minor 13th", chordIntervals : [0, 3, 7, 10, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
 ]
 
 function ChordTraining() {
@@ -244,15 +244,16 @@ function ChordTraining() {
                     <Button 
                         id="settings-toggle-btn"
                         onClick={makePopupVisible}
-                    ><i className="fas fa-sliders-h"></i></Button>
-                    <Button 
+                    ><i className="fas fa-sliders-h"></i>
+                    </Button>
+                    {/* <Button 
                         id="popup-btn"
                         onClick={() => setSettingsOpen(!settingsOpen)}
                         aria-controls="example-collapse-text"
                         aria-expanded={settingsOpen}
-                    ><i className="fas fa-sliders-h"></i></Button>
+                    ><i className="fas fa-sliders-h"></i></Button> */}
                 </div>
-                    <Collapse in={settingsOpen}>
+                    {/* <Collapse in={settingsOpen}>
                         <div id="example-collapse-text">
                             <SettingsMenu
                                 onChange={handleSettingsChange}
@@ -265,20 +266,19 @@ function ChordTraining() {
                                 
                             />
                         </div>
-                    </Collapse>
+                    </Collapse> */}
             </div>
             <div className="popup">
                 <div className="popuptext" id="settings-pop">
-                <SettingsMenu
-                                onChange={handleSettingsChange}
-                                playbackRepeats = {playbackRepeats}
-                                playbackSpeed = {playbackSpeed}
-                                guessesAllowed={guessesAllowed}
-                                answerSet={answerSet}
-                                intervalDirection = {intervalDirection}
-                                answerBoxes = {answerBoxes}
-                                
-                            />
+                <SettingsMenuTest
+                    onChange={handleSettingsChange}
+                    playbackRepeats = {playbackRepeats}
+                    playbackSpeed = {playbackSpeed}
+                    guessesAllowed={guessesAllowed}
+                    answerSet={answerSet}
+                    intervalDirection = {intervalDirection}
+                    answerBoxes = {answerBoxes}
+                />
                 </div>
             </div>
             <div className="answer-section">

@@ -22,8 +22,6 @@ function AnswerButton(props) {
 
 
     function handleClick() {
-        console.log(props);
-        console.log(props.currentGuess, props.guessesAllowed);
         if(!props.isCorrect) {
             $('#' + props.id).addClass('button-false disabled')
             props.incrementGuessCount();
@@ -43,7 +41,7 @@ function AnswerButton(props) {
     }
 
     return (
-        <div className="answer-button" onClick={handleClick} id={props.id}>
+        <div className="answer-button" onClick={handleClick} id={props.id} title="Minor Triad I-iii-V">
             <span>{props.hotkey}.</span><p className="answer-choice">{props.answerText}</p>
         </div>
     )

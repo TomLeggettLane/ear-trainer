@@ -7,7 +7,6 @@ import Checkbox from './Checkbox';
 
 function SettingsMenuTest(props) {
     const [radioValue, setRadioValue] = useState('1');
-    const [difficultyValue, setDifficultyValue] = useState('easy');
 
     const radios = [
         {name: 'Game Settings', value: '1'},
@@ -16,11 +15,12 @@ function SettingsMenuTest(props) {
     ]
 
     const difficulties = [
-        {name: 'easy', value: '1', color: "outline-warning"},
-        {name: 'medium', value: '2', color: "outline-success"},
-        {name: 'hard', value: '3',  color: "outline-danger"},
-        {name: 'expert', value: '4',  color: "outline-dark"},
+        {name: 'easy', color: "outline-warning"},
+        {name: 'medium', color: "outline-success"},
+        {name: 'hard', color: "outline-danger"},
+        {name: 'expert', color: "outline-dark"},
     ]
+
     const settings = [
         <div id="game-settings">
             <ToggleButtonGroup className="settings-bar" size="sm" type="radio" name="playbackRepeats" value={props.playbackRepeats} onChange={(e) => props.onChange("playbackRepeats", e)}>
@@ -64,64 +64,69 @@ function SettingsMenuTest(props) {
             </ToggleButtonGroup>
         </div>,
         <div id="included-chord-settings">
+        {console.log("propAS", props.answerSet)}
             <div id="included-chord-btns">
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
-                <ToggleButton className="settings-label-button">Triads</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>min</ToggleButton>
-                    <ToggleButton id="interval-btn-1" variant={props.answerSet.includes(1) ? 'toggle-active interval': 'toggle interval'} value={1}>maj</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>dim</ToggleButton>
-                    <ToggleButton id="interval-btn-3" variant={props.answerSet.includes(3) ? 'toggle-active interval': 'toggle interval'} value={3}>aug</ToggleButton> 
+                    <ToggleButton className="settings-label-button">Triads</ToggleButton>
+                    <ToggleButton id="triad-min-btn" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>min</ToggleButton>
+                    <ToggleButton id="triad-maj-btn" variant={props.answerSet.includes(1) ? 'toggle-active interval': 'toggle interval'} value={1}>maj</ToggleButton>
+                    <ToggleButton id="triad-dim-btn" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>dim</ToggleButton>
+                    <ToggleButton id="triad-aug-btn" variant={props.answerSet.includes(3) ? 'toggle-active interval': 'toggle interval'} value={3}>aug</ToggleButton> 
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                     <ToggleButton className="settings-label-button">Sus</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>sus2</ToggleButton>
-                    <ToggleButton id="interval-btn-3" variant={props.answerSet.includes(3) ? 'toggle-active interval': 'toggle interval'} value={3}>sus4</ToggleButton>
+                    <ToggleButton id="sus-sus2-btn" variant={props.answerSet.includes(4) ? 'toggle-active interval': 'toggle interval'} value={4}>sus2</ToggleButton>
+                    <ToggleButton id="sus-sus4-btn" variant={props.answerSet.includes(5) ? 'toggle-active interval': 'toggle interval'} value={5}>sus4</ToggleButton>
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                     <ToggleButton className="settings-label-button">6ths</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>min6</ToggleButton>
-                    <ToggleButton id="interval-btn-3" variant={props.answerSet.includes(3) ? 'toggle-active interval': 'toggle interval'} value={3}>maj6</ToggleButton>
+                    <ToggleButton id="6ths-min6-btn" variant={props.answerSet.includes(6) ? 'toggle-active interval': 'toggle interval'} value={6}>min6</ToggleButton>
+                    <ToggleButton id="6ths-maj6-btn" variant={props.answerSet.includes(7) ? 'toggle-active interval': 'toggle interval'} value={7}>maj6</ToggleButton>
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                     <ToggleButton className="settings-label-button">7ths</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>m7</ToggleButton>
-                    <ToggleButton id="interval-btn-1" variant={props.answerSet.includes(1) ? 'toggle-active interval': 'toggle interval'} value={1}>Δ7</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>dom7</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>minΔ7</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>+Δ7</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>+7</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>o7</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>ø7</ToggleButton>
-                    <ToggleButton id="interval-btn-3" variant={props.answerSet.includes(3) ? 'toggle-active interval': 'toggle interval'} value={3}>7b5</ToggleButton>
+                    <ToggleButton id="7ths-min7-btn" variant={props.answerSet.includes(8) ? 'toggle-active interval': 'toggle interval'} value={8}>m7</ToggleButton>
+                    <ToggleButton id="7ths-maj7-btn" variant={props.answerSet.includes(9) ? 'toggle-active interval': 'toggle interval'} value={9}>Δ7</ToggleButton>
+                    <ToggleButton id="7ths-dom7-btn" variant={props.answerSet.includes(10) ? 'toggle-active interval': 'toggle interval'} value={10}>dom7</ToggleButton>
+                    <ToggleButton id="7ths-minmaj7-btn" variant={props.answerSet.includes(11) ? 'toggle-active interval': 'toggle interval'} value={11}>minΔ7</ToggleButton>
+                    <ToggleButton id="7ths-augmaj7-btn" variant={props.answerSet.includes(12) ? 'toggle-active interval': 'toggle interval'} value={12}>+Δ7</ToggleButton>
+                    <ToggleButton id="7ths-aug7-btn" variant={props.answerSet.includes(13) ? 'toggle-active interval': 'toggle interval'} value={13}>+7</ToggleButton>
+                    <ToggleButton id="7ths-dim7-btn" variant={props.answerSet.includes(14) ? 'toggle-active interval': 'toggle interval'} value={14}>o7</ToggleButton>
+                    <ToggleButton id="7ths-halfdim7-btn" variant={props.answerSet.includes(15) ? 'toggle-active interval': 'toggle interval'} value={15}>ø7</ToggleButton>
+                    <ToggleButton id="7ths-7b5-btn" variant={props.answerSet.includes(16) ? 'toggle-active interval': 'toggle interval'} value={16}>7b5</ToggleButton>
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                     <ToggleButton className="settings-label-button">9ths</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>m9</ToggleButton>
-                    <ToggleButton id="interval-btn-1" variant={props.answerSet.includes(1) ? 'toggle-active interval': 'toggle interval'} value={1}>maj9</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>dom9</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>madd9 </ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>Madd9</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>m 6/9</ToggleButton>
-                    <ToggleButton id="interval-btn-2" variant={props.answerSet.includes(2) ? 'toggle-active interval': 'toggle interval'} value={2}>M 6/9</ToggleButton>
+                    <ToggleButton id="9ths-min9-btn" variant={props.answerSet.includes(17) ? 'toggle-active interval': 'toggle interval'} value={17}>m9</ToggleButton>
+                    <ToggleButton id="9ths-maj9-btn" variant={props.answerSet.includes(18) ? 'toggle-active interval': 'toggle interval'} value={18}>maj9</ToggleButton>
+                    <ToggleButton id="9ths-dom9-btn" variant={props.answerSet.includes(19) ? 'toggle-active interval': 'toggle interval'} value={19}>dom9</ToggleButton>
+                    <ToggleButton id="9ths-madd9-btn" variant={props.answerSet.includes(20) ? 'toggle-active interval': 'toggle interval'} value={20}>madd9 </ToggleButton>
+                    <ToggleButton id="9ths-Madd9-btn" variant={props.answerSet.includes(21) ? 'toggle-active interval': 'toggle interval'} value={21}>Madd9</ToggleButton>
+                    <ToggleButton id="9ths-m6/9-btn" variant={props.answerSet.includes(22) ? 'toggle-active interval': 'toggle interval'} value={22}>m 6/9</ToggleButton>
+                    <ToggleButton id="9ths-M6/9-btn" variant={props.answerSet.includes(23) ? 'toggle-active interval': 'toggle interval'} value={23}>M 6/9</ToggleButton>
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                     <ToggleButton className="settings-label-button">11ths</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>11</ToggleButton>
-                    <ToggleButton id="interval-btn-1" variant={props.answerSet.includes(1) ? 'toggle-active interval': 'toggle interval'} value={1}>Δ7#11</ToggleButton>
+                    <ToggleButton id="11ths-min11-btn" variant={props.answerSet.includes(24) ? 'toggle-active interval': 'toggle interval'} value={24}>min11</ToggleButton>
+                    <ToggleButton id="11ths-maj7#11-btn" variant={props.answerSet.includes(25) ? 'toggle-active interval': 'toggle interval'} value={25}>Δ7#11</ToggleButton>
+                    <ToggleButton id="11ths-dom11-btn" variant={props.answerSet.includes(26) ? 'toggle-active interval': 'toggle interval'} value={26}>dom11</ToggleButton>
                 </ToggleButtonGroup>
                 <br />
                 <ToggleButtonGroup size="sm" type="checkbox" className="settings-bar" value={props.answerSet} onChange={(e) => props.onChange("answerSet", e)}>
                     <ToggleButton className="settings-label-button">13ths</ToggleButton>
-                    <ToggleButton id="interval-btn-0" variant={props.answerSet.includes(0) ? 'toggle-active interval': 'toggle interval'} value={0}>maj13</ToggleButton>
-                    <ToggleButton id="interval-btn-1" variant={props.answerSet.includes(1) ? 'toggle-active interval': 'toggle interval'} value={1}>min13</ToggleButton>
+                    <ToggleButton id="13ths-min13-btn" variant={props.answerSet.includes(27) ? 'toggle-active interval': 'toggle interval'} value={27}>min13</ToggleButton>
+                    <ToggleButton id="13ths-maj13-btn" variant={props.answerSet.includes(28) ? 'toggle-active interval': 'toggle interval'} value={28}>maj13</ToggleButton>
+                    <ToggleButton id="13ths-dom13-btn" variant={props.answerSet.includes(29) ? 'toggle-active interval': 'toggle interval'} value={29}>dom13</ToggleButton>
+                    
                 </ToggleButtonGroup>
                 <br />
             </div>
+
             <ButtonGroup id='difficulty-btn-group'>
             {difficulties.map((difficulty, idx) => (
                 <ToggleButton
@@ -130,18 +135,18 @@ function SettingsMenuTest(props) {
                     type="radio"
                     variant={difficulty.color}
                     name="difficulty"
-                    value={difficulty.value}
-                    checked={difficultyValue === difficulty.value}
-                    onChange={(e) => setDifficultyValue(e.currentTarget.value)}
+                    value={difficulty.name}
+                    checked={false}  //DOESN'T WORK!!!!!
+                    onChange={(e) => {props.onChange("answerSet", e.currentTarget.value)}}
                     size="sm"
                 >
-                {difficulty.name}
+                    {difficulty.name}
                 </ToggleButton>
             ))}
             </ButtonGroup>
         </div>,
         "Sound Settings - synth settings etc. ",
-    ]
+    ];
 
     function hideSettings() {
         document.getElementById('settings-pop').classList.toggle("show");

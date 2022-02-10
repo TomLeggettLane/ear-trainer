@@ -37,29 +37,54 @@ const chords = [
         { chordName : "Major 7th", chordIntervals : [0, 4, 7, 11], chordFamily : "7th", difficulty: "medium"},
         { chordName : "Dominant 7th", chordIntervals : [0, 4, 7, 10], chordFamily : "7th", difficulty: "medium"},
         { chordName : "Minor-Major 7th", chordIntervals : [0, 3, 7, 11], chordFamily : "7th", difficulty: "medium"},
-        { chordName : "Augmented-major 7th", chordIntervals : [0, 4, 8, 11], chordFamily : "7th", difficulty: "hard" },
-        { chordName : "Augmented 7th", chordIntervals : [0, 4, 8, 10], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Augmented-major 7th", chordIntervals : [0, 4, 8, 11], chordFamily : "7th", difficulty: "expert" },
+        { chordName : "Augmented 7th", chordIntervals : [0, 4, 8, 10], chordFamily : "7th", difficulty: "expert"},
         { chordName : "Half-diminished 7th", chordIntervals : [0, 3, 6, 10], chordFamily : "7th", difficulty: "medium" },
         { chordName : "Diminished 7th", chordIntervals : [0, 3, 6, 9], chordFamily : "7th", difficulty: "hard" },
-        { chordName : "7th flat 5", chordIntervals : [0, 4, 6, 10], chordFamily : "7th", difficulty: "hard" },
+        { chordName : "7th flat 5", chordIntervals : [0, 4, 6, 10], chordFamily : "7th", difficulty: "expert" },
     //9th's
         { chordName : "Minor 9th", chordIntervals : [0, 3, 7, 10, 14], chordFamily : "7th", difficulty: "medium"},
         { chordName : "Major 9th", chordIntervals : [0, 4, 7, 11, 14], chordFamily : "7th", difficulty: "medium"},
-        { chordName : "Dominant 9th", chordIntervals : [0, 4, 7, 10, 14], chordFamily : "7th", difficulty: "medium"},
+        { chordName : "Dominant 9th", chordIntervals : [0, 4, 7, 10, 14], chordFamily : "7th", difficulty: "hard"},
         { chordName : "Minor add9", chordIntervals : [0, 3, 7, 14], chordFamily : "7th", difficulty: "medium"},
         { chordName : "Major add9", chordIntervals : [0, 4, 7, 14], chordFamily : "7th", difficulty: "medium"},
         { chordName : "Minor 6/9", chordIntervals : [0, 3, 7, 9, 14], chordFamily : "7th", difficulty: "hard"},
         { chordName : "Major 6/9", chordIntervals : [0, 4, 7, 9, 14], chordFamily : "7th", difficulty: "hard"},
     //11th's
-        { chordName : "11th", chordIntervals : [0, 4, 7, 10, 14, 17], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Minor 11th", chordIntervals : [0, 3, 7, 10, 14, 17], chordFamily : "7th", difficulty: "hard"},
         { chordName : "Major 7th #11", chordIntervals : [0, 4, 7, 11, 18], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Dominant 11th", chordIntervals : [0, 4, 7, 10, 14, 17], chordFamily : "7th", difficulty: "expert"},
     //13th's
-        { chordName : "Major 13th", chordIntervals : [0, 4, 7, 11, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
-        { chordName : "Minor 13th", chordIntervals : [0, 3, 7, 10, 14, 17, 21], chordFamily : "7th", difficulty: "hard"},
+        { chordName : "Minor 13th", chordIntervals : [0, 3, 7, 10, 14, 17, 21], chordFamily : "7th", difficulty: "expert"},
+        { chordName : "Major 13th", chordIntervals : [0, 4, 7, 11, 14, 17, 21], chordFamily : "7th", difficulty: "expert"},
+        { chordName : "Dominant 13th", chordIntervals : [0, 4, 7, 10, 14, 17, 21], chordFamily : "7th", difficulty: "expert"},
 ]
 
+function getDifficultyArrays() {
+    var easyChords = [];
+    var mediumChords = [];
+    var hardChords = [];
+    var expertChords = [];
+
+    for(let i = 0; i < chords.length; i++) {
+        switch (chords[i].difficulty) {
+            case "easy":
+                easyChords.push(i);
+            case "medium": 
+                mediumChords.push(i);
+            case "hard":
+                hardChords.push(i);
+            case "expert":
+                expertChords.push(i);
+        }
+    }
+    return {easy: easyChords, medium: mediumChords, hard: hardChords, expert: expertChords}
+}
+
+const difficultyArrays = getDifficultyArrays();
+
 function ChordTraining() {
-    const [answerSet, setAnswerSet] = useState(chords);   
+    const [answerSet, setAnswerSet] = useState([0,1,2,3]);   
     const [answerBoxes, setAnswerBoxes] = useState(4);
     const [answerOptions, setAnswerOptions] = useState([]);
 
@@ -82,7 +107,7 @@ function ChordTraining() {
         nextQuestion();
     }, []);
 
-    function handleSettingsChange(setting, newValue, checkbox) {
+    function handleSettingsChange(setting, newValue) {
         switch (setting) {
             case "playbackRepeats":
                 setPlaybackRepeats(newValue);
@@ -101,7 +126,7 @@ function ChordTraining() {
                 }
                 break;   
             case "answerSet":
-                setAnswerSet(getNewAnswerSet([...answerSet], newValue, checkbox));
+                setAnswerSet(getNewAnswerSet([...answerSet], newValue));
                 break;
             case "intervalDirection":
                 setIntervalDirection(newValue);
@@ -110,28 +135,18 @@ function ChordTraining() {
     }
 
     function getNewAnswerSet(tempAnswerSet, newValue, checkbox) {
-        // if(newValue === "first-octave" || newValue === "second-octave") {
-        //     if(newValue === "first-octave") {
-        //         for(let i = 0; i < 12; i++) {
-        //             const index = tempAnswerSet.indexOf(i);
-        //             if (index === -1 && checkbox) {
-        //                 tempAnswerSet.push(i);
-        //             } else if(index > -1 && !checkbox) {
-        //                 tempAnswerSet.splice(index, 1);   
-        //             }
-        //         }
-        //     } else {
-        //         for(let i = 12; i < 24; i++) {
-        //             const index = tempAnswerSet.indexOf(i);
-        //             if (index === -1 && checkbox) {
-        //                 tempAnswerSet.push(i);
-        //             } else if(index > -1 && !checkbox) {
-        //                 tempAnswerSet.splice(index, 1);   
-        //             }
-        //         }
-        //     }
-        //     newValue = tempAnswerSet;
-        // } 
+        if(newValue === "easy" || newValue === "medium" || newValue === "hard" || newValue === "expert") {
+            switch (newValue) {
+                case "easy":
+                    return difficultyArrays.easy;
+                case "medium":
+                    return difficultyArrays.medium;
+                case "hard":
+                    return difficultyArrays.hard;
+                case "expert":
+                    return difficultyArrays.expert;
+            }
+        }
         return newValue;
     }
 
@@ -141,7 +156,7 @@ function ChordTraining() {
             setAnswerBoxes(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
         }
         for(let i=0; i < Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes); i++) {
-            answers.push({answerIndex: answerSet[i], isCorrect: false})
+            answers.push({answerIndex: chords[answerSet[i]], isCorrect: false})
         }
         answers[0].isCorrect = true;
         return answers;
@@ -165,11 +180,10 @@ function ChordTraining() {
         shuffleArray(newAnswerSet);
         const newQuestion = getNewQuestion(newAnswerSet);
         setAnswerOptions(newQuestion);
-        setCurrentChord(newAnswerSet[0]);
+        setCurrentChord(chords[newAnswerSet[0]]);
         shuffleArray(newQuestion);
         setCurrentKey(36 + Math.floor(Math.random() * 24));
         setRandomDirection(Math.random());
-        console.log(newAnswerSet[0].chordName)
     }
 
     function playGuessSound(correct) {

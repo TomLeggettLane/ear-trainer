@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import AnswerButton from '../AnswerButton';
-import SettingsMenuTest from './SettingsMenuTest';
+import SettingsMenu from './SettingsMenu';
 import MusicPlayer, { resetPlaybacks } from '../MusicPlayer';
 import Score from './Score'
 import { Howl, Howler } from 'howler';
@@ -94,7 +94,7 @@ function ChordTraining() {
     const [guessesAllowed, setGuessesAllowed] = useState(3);
     const [playbackSpeed, setPlaybackSpeed] = useState(2);
 
-    const [currentKey, setCurrentKey] = useState(36 + Math.floor(Math.random() * 24));
+    const [currentKey, setCurrentKey] = useState(40 + Math.floor(Math.random() * 12));
     const [intervalDirection, setIntervalDirection] = useState('up');
     const [randomDirection, setRandomDirection] = useState(0);
 
@@ -182,7 +182,7 @@ function ChordTraining() {
         setAnswerOptions(newQuestion);
         setCurrentChord(chords[newAnswerSet[0]]);
         shuffleArray(newQuestion);
-        setCurrentKey(36 + Math.floor(Math.random() * 24));
+        setCurrentKey(40 + Math.floor(Math.random() * 12));
         setRandomDirection(Math.random());
     }
 
@@ -260,31 +260,11 @@ function ChordTraining() {
                         onClick={makePopupVisible}
                     ><i className="fas fa-sliders-h"></i>
                     </Button>
-                    {/* <Button 
-                        id="popup-btn"
-                        onClick={() => setSettingsOpen(!settingsOpen)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={settingsOpen}
-                    ><i className="fas fa-sliders-h"></i></Button> */}
                 </div>
-                    {/* <Collapse in={settingsOpen}>
-                        <div id="example-collapse-text">
-                            <SettingsMenu
-                                onChange={handleSettingsChange}
-                                playbackRepeats = {playbackRepeats}
-                                playbackSpeed = {playbackSpeed}
-                                guessesAllowed={guessesAllowed}
-                                answerSet={answerSet}
-                                intervalDirection = {intervalDirection}
-                                answerBoxes = {answerBoxes}
-                                
-                            />
-                        </div>
-                    </Collapse> */}
             </div>
             <div className="popup">
                 <div className="popuptext" id="settings-pop">
-                <SettingsMenuTest
+                <SettingsMenu
                     onChange={handleSettingsChange}
                     playbackRepeats = {playbackRepeats}
                     playbackSpeed = {playbackSpeed}
@@ -292,6 +272,7 @@ function ChordTraining() {
                     answerSet={answerSet}
                     intervalDirection = {intervalDirection}
                     answerBoxes = {answerBoxes}
+                    gameType = "ChordTraining"
                 />
                 </div>
             </div>
@@ -331,6 +312,5 @@ function shuffleArray(array) {
         array[j] = temp;
     }
 }
-    
 
 export default ChordTraining;

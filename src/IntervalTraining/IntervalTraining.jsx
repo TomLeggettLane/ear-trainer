@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import AnswerButton from '../AnswerButton';
-import SettingsMenu from './SettingsMenu';
+import SettingsMenuTest from './SettingsMenuTest';
 import MusicPlayer, { resetPlaybacks } from '../MusicPlayer';
 import Score from './Score'
 import { Howl, Howler } from 'howler';
@@ -19,35 +19,60 @@ const incorrectSound = new Howl({
     html5: true,
     volume: 0.2
 })
-const intervals = [
-    { intervalName: "Perfect Unison", semitones : 0},
-    { intervalName: 'Minor 2nd', semitones : 1},
-    { intervalName: 'Major 2nd', semitones : 2},
-    { intervalName: 'Minor 3rd', semitones : 3},
-    { intervalName: 'Major 3rd', semitones : 4},
-    { intervalName: 'Perfect 4th', semitones : 5},
-    { intervalName: 'Tritone', semitones : 6},
-    { intervalName: 'Perfect 5th', semitones : 7},
-    { intervalName: 'Minor 6th', semitones : 8},
-    { intervalName: 'Major 6th', semitones : 9},
-    { intervalName: 'Minor 7th', semitones : 10},
-    { intervalName: 'Major 7th', semitones : 11},
 
-    { intervalName: 'Perfect Octave', semitones : 12},
-    { intervalName: 'Minor 9th', semitones : 13},
-    { intervalName: 'Major 9th', semitones : 14},
-    { intervalName: 'Minor 3rd (8va)', semitones : 15},
-    { intervalName: 'Major 3rd (8va)', semitones : 16},
-    { intervalName: 'Perfect 11th', semitones : 17},
-    { intervalName: '#11', semitones : 18},
-    { intervalName: 'Perfect 5th (8va)', semitones : 19},
-    { intervalName: 'Minor 13th', semitones : 20},
-    { intervalName: 'Major 13th', semitones : 21},
-    { intervalName: 'Minor 7th (8va)', semitones : 22},
-    { intervalName: 'Major 7th (8va)', semitones : 23},
+const intervals = [
+    { intervalName: "Perfect Unison", semitones : 0, difficulty: "easy"},
+    { intervalName: 'Minor 2nd', semitones : 1, difficulty: "medium"},
+    { intervalName: 'Major 2nd', semitones : 2, difficulty: "easy"},
+    { intervalName: 'Minor 3rd', semitones : 3, difficulty: "medium"},
+    { intervalName: 'Major 3rd', semitones : 4, difficulty: "easy"},
+    { intervalName: 'Perfect 4th', semitones : 5, difficulty: "easy"},
+    { intervalName: 'Tritone', semitones : 6, difficulty: "medium"},
+    { intervalName: 'Perfect 5th', semitones : 7, difficulty: "easy"},
+    { intervalName: 'Minor 6th', semitones : 8, difficulty: "medium"},
+    { intervalName: 'Major 6th', semitones : 9, difficulty: "easy"},
+    { intervalName: 'Minor 7th', semitones : 10, difficulty: "medium"},
+    { intervalName: 'Major 7th', semitones : 11, difficulty: "easy"},
+
+    { intervalName: 'Perfect Octave', semitones : 12, difficulty: "medium"},
+    { intervalName: 'Minor 9th', semitones : 13, difficulty: "hard"},
+    { intervalName: 'Major 9th', semitones : 14, difficulty: "medium"},
+    { intervalName: 'Minor 3rd (8va)', semitones : 15, difficulty: "hard"},
+    { intervalName: 'Major 3rd (8va)', semitones : 16, difficulty: "hard"},
+    { intervalName: 'Perfect 11th', semitones : 17, difficulty: "hard"},
+    { intervalName: '#11', semitones : 18, difficulty: "hard"},
+    { intervalName: 'Perfect 5th (8va)', semitones : 19, difficulty: "hard"},
+    { intervalName: 'Minor 13th', semitones : 20, difficulty: "hard"},
+    { intervalName: 'Major 13th', semitones : 21, difficulty: "hard"},
+    { intervalName: 'Minor 7th (8va)', semitones : 22, difficulty: "hard"},
+    { intervalName: 'Major 7th (8va)', semitones : 23, difficulty: "expert"},
 ]
+
+function getDifficultyArrays() {
+    var easyIntervals = [];
+    var mediumIntervals = [];
+    var hardIntervals= [];
+    var expertIntervals = [];
+
+    for(let i = 0; i < intervals.length; i++) {
+        switch (intervals[i].difficulty) {
+            case "easy":
+                easyIntervals.push(i);
+            case "medium": 
+                mediumIntervals.push(i);
+            case "hard":
+                hardIntervals.push(i);
+            case "expert":
+                expertIntervals.push(i);
+        }
+    }
+    return {easy: easyIntervals, medium: mediumIntervals, hard: hardIntervals, expert: expertIntervals}
+}
+
+const difficultyArrays = getDifficultyArrays();
+
 function IntervalTraining() {
-    const [answerSet, setAnswerSet] = useState(intervals.slice(0, 12));   
+    const [answerSet, setAnswerSet] = useState([0,2,4,5,7,9,11]);   
     const [answerBoxes, setAnswerBoxes] = useState(4);
     const [answerOptions, setAnswerOptions] = useState([]);
 
@@ -98,7 +123,18 @@ function IntervalTraining() {
     }
 
     function getNewAnswerSet(tempAnswerSet, newValue, checkbox) {
-        if(newValue === "first-octave" || newValue === "second-octave") {
+        if(newValue === "easy" || newValue === "medium" || newValue === "hard" || newValue === "expert") {
+            switch (newValue) {
+                case "easy":
+                    return difficultyArrays.easy;
+                case "medium":
+                    return difficultyArrays.medium;
+                case "hard":
+                    return difficultyArrays.hard;
+                case "expert":
+                    return difficultyArrays.expert;
+            }
+        } else if(newValue === "first-octave" || newValue === "second-octave") {
             if(newValue === "first-octave") {
                 for(let i = 0; i < 12; i++) {
                     const index = tempAnswerSet.indexOf(i);
@@ -129,7 +165,7 @@ function IntervalTraining() {
             setAnswerBoxes(Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes));
         }
         for(let i=0; i < Math.min(Math.floor(answerSet.length/2) * 2, answerBoxes); i++) {
-            answers.push({answerIndex: answerSet[i], isCorrect: false})
+            answers.push({answerIndex: intervals[answerSet[i]], isCorrect: false})
         }
         answers[0].isCorrect = true;
         return answers;
@@ -153,8 +189,7 @@ function IntervalTraining() {
         shuffleArray(newAnswerSet);
         const newQuestion = getNewQuestion(newAnswerSet);
         setAnswerOptions(newQuestion);
-        console.log("newAnswerSet", newAnswerSet)
-        setCurrentInterval(newAnswerSet[0].semitones);
+        setCurrentInterval(newAnswerSet[0]);
         shuffleArray(newQuestion);
         setCurrentKey(36 + Math.floor(Math.random() * 24));
         setRandomDirection(Math.random());
@@ -187,6 +222,10 @@ function IntervalTraining() {
 
     function incrementGuessCount() {
         setCurrentGuess(currentGuess+1);
+    }
+
+    function makePopupVisible() {
+        document.getElementById('settings-pop').classList.toggle("show");
     }
 
     return(
@@ -227,25 +266,23 @@ function IntervalTraining() {
                     </Button>
                     <Button 
                         id="settings-toggle-btn"
-                        onClick={() => setSettingsOpen(!settingsOpen)}
-                        aria-controls="example-collapse-text"
-                        aria-expanded={settingsOpen}
-                    ><i className="fas fa-sliders-h"></i></Button>
+                        onClick={makePopupVisible}
+                    ><i className="fas fa-sliders-h"></i>
+                    </Button>
                 </div>
-                    <Collapse in={settingsOpen}>
-                        <div id="example-collapse-text">
-                            <SettingsMenu
-                                onChange={handleSettingsChange}
-                                playbackRepeats = {playbackRepeats}
-                                playbackSpeed = {playbackSpeed}
-                                guessesAllowed={guessesAllowed}
-                                answerSet={answerSet}
-                                intervalDirection = {intervalDirection}
-                                answerBoxes = {answerBoxes}
-                                
-                            />
-                        </div>
-                    </Collapse>
+            </div>
+            <div className="popup">
+                <div className="popuptext" id="settings-pop">
+                    <SettingsMenuTest
+                        onChange={handleSettingsChange}
+                        playbackRepeats = {playbackRepeats}
+                        playbackSpeed = {playbackSpeed}
+                        guessesAllowed={guessesAllowed}
+                        answerSet={answerSet}
+                        intervalDirection = {intervalDirection}
+                        answerBoxes = {answerBoxes}
+                    />
+                </div>
             </div>
             <div className="answer-section">
                 <div className="answer-boxes">

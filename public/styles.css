@@ -330,3 +330,31 @@ border-color: #1cb0f6;
 #difficulty-btn-group {
   margin: 3% 0 1%;
 }
+
+.nav-link-icon {
+  display: inline-block;
+  width: 30px;
+}
+
+.nav-link {
+  cursor: default;
+}
+
+.locked {
+  color: grey !important;
+}
+
+#ear-trainer-logo {
+  position: relative;
+  left: -2px;
+  margin: 0 5px 0 10px;
+}
+
+#included-intervals {
+  justify-content: center;
+}
+
+.red {
+  background-color: red;
+  color: red;
+}

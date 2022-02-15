@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AnswerButton from '../AnswerButton';
 import SettingsMenu from './SettingsMenu';
-import MusicPlayer, { resetPlaybacks } from '../MusicPlayer';
+import MusicPlayer, { resetPlaybacks, playQuestionSound } from '../MusicPlayer';
 import Score from './Score'
 import { Howl, Howler } from 'howler';
 import $ from 'jquery';
@@ -101,8 +101,6 @@ function ChordTraining() {
     const [currentScore, setCurrentScore] = useState(0);
     const [totalQuestions, setTotalQuestions] = useState(0);
 
-    const [settingsOpen, setSettingsOpen] = useState(true);
-
     useEffect(() => {
         nextQuestion();
     }, []);
@@ -179,11 +177,18 @@ function ChordTraining() {
         const newAnswerSet = getValidAnswerSet();
         shuffleArray(newAnswerSet);
         const newQuestion = getNewQuestion(newAnswerSet);
-        setAnswerOptions(newQuestion);
-        setCurrentChord(chords[newAnswerSet[0]]);
         shuffleArray(newQuestion);
-        setCurrentKey(40 + Math.floor(Math.random() * 12));
-        setRandomDirection(Math.random());
+        setAnswerOptions(newQuestion);
+        const newCurrentChord = chords[newAnswerSet[0]];
+        setCurrentChord(newCurrentChord);
+        const newCurrentKey = 40 + Math.floor(Math.random() * 12);
+        setCurrentKey(newCurrentKey);
+        const newRandomDirection = Math.random();
+        setRandomDirection(newRandomDirection);
+
+        setTimeout(function () { 
+            playQuestionSound(playbackSpeed, playbackRepeats, "chord", newCurrentKey, newCurrentChord,  null, intervalDirection, newRandomDirection)
+        }, 800)
     }
 
     function playGuessSound(correct) {

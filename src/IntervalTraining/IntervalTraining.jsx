@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AnswerButton from '../AnswerButton';
 import SettingsMenuTest from './SettingsMenuTest';
-import MusicPlayer, { resetPlaybacks } from '../MusicPlayer';
+import MusicPlayer, { resetPlaybacks , playQuestionSound } from '../MusicPlayer';
 import Score from './Score'
 import { Howl, Howler } from 'howler';
 import $ from 'jquery';
@@ -88,8 +88,6 @@ function IntervalTraining() {
 
     const [currentScore, setCurrentScore] = useState(0);
     const [totalQuestions, setTotalQuestions] = useState(0);
-
-    const [settingsOpen, setSettingsOpen] = useState(true);
 
     useEffect(() => {
         nextQuestion();
@@ -189,10 +187,17 @@ function IntervalTraining() {
         shuffleArray(newAnswerSet);
         const newQuestion = getNewQuestion(newAnswerSet);
         setAnswerOptions(newQuestion);
-        setCurrentInterval(newAnswerSet[0]);
+        const newCurrentInterval = newAnswerSet[0];
+        setCurrentInterval(newCurrentInterval);
         shuffleArray(newQuestion);
-        setCurrentKey(36 + Math.floor(Math.random() * 24));
-        setRandomDirection(Math.random());
+        const newCurrentKey = 36 + Math.floor(Math.random() * 24);
+        setCurrentKey(newCurrentKey);
+        const newRandomDirection = Math.random();
+        setRandomDirection(newRandomDirection);
+
+        setTimeout(function () { 
+            playQuestionSound(playbackSpeed, playbackRepeats, "interval", newCurrentKey, null,  newCurrentInterval, intervalDirection, newRandomDirection)
+        }, 800)
     }
 
     function playGuessSound(correct) {

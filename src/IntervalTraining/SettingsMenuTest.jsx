@@ -4,11 +4,12 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import Checkbox from './Checkbox';
+import SynthSettings from './SynthSettings.jsx';
+
 
 function SettingsMenuTest(props) {
     const [radioValue, setRadioValue] = useState('1');
 
-    console.log(props.answerSet);
     const radios = [
         {name: 'Game Settings', value: '1'},
         {name: 'Included Intervals', value: '2'},
@@ -136,7 +137,7 @@ function SettingsMenuTest(props) {
             ))}
             </ButtonGroup>
         </div>,
-        "Sound Settings - synth settings etc. ",
+        <SynthSettings />,
     ];
 
     function hideSettings() {

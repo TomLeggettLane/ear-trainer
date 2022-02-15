@@ -354,7 +354,6 @@ border-color: #1cb0f6;
   justify-content: center;
 }
 
-.red {
-  background-color: red;
-  color: red;
+#ex1Slider .slider-selection {
+	background: #BABABA;
 }

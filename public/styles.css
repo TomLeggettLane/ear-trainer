@@ -18,16 +18,18 @@ body #root {
     float: left;
 }
 
-#game {
+.game {
   display: inline-block;
-  /* margin: 0 200px !important; */
+  position: relative;
   width: calc(100% - 280px);
+  height: 100%;
   padding: 40px 100px;
 }
 
-#game-title {
+.game-title {
     text-align: center;
     margin: 0 auto 3%;
+    font-weight: bold;
 }
 
 .answer-button {
@@ -52,14 +54,17 @@ border-color: #1cb0f6;
 }
 
 .answer-boxes {
+  position: relative;
   height: 100%;
-  margin-top: 35px;
+  max-width: 1100px;
+  margin: 0 auto;
+  margin-top: 10%;
+  right: 0.9%;
 }
 
 .answer-section {
   height: 100vh;
-  justify-content: center;
-  text-align: center;
+  position: relative;
 }
 
 .answer-button:active {
@@ -108,7 +113,6 @@ border-color: #1cb0f6;
   font-size: 20px;
   margin-bottom:10px;
 }
-
 
 #settings-menu {
   background-color: white;
@@ -357,3 +361,129 @@ border-color: #1cb0f6;
 #ex1Slider .slider-selection {
 	background: #BABABA;
 }
+
+.range-slider__tooltip .range-slider__tooltip__label {
+  visibility: hidden;
+}
+
+.synth-slider-label {
+  display: inline-block;
+  font-size: 1em;
+  font-weight: bold;
+  width: 100px;
+  position: relative;
+  bottom: 3px;
+}
+
+.synth-sliders {
+  justify-content: center;
+}
+
+.synth-effect {
+  margin: 1%;
+  position: relative;
+  right: 10%;
+}
+
+.unclickable {
+  pointer-events: none;
+}
+
+.fa-7x {
+  margin: 3%;
+}
+
+.card-title {
+  margin: 2% auto 0;
+  font-weight: bold;
+}
+
+.game-description {
+  margin: 5% auto 2%;
+}
+
+
+
+
+.start-button {
+    min-width: 300px;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 16px;
+    border: 2px solid #e5e5e5;
+    border-bottom: 6px solid #e5e5e5;
+    transition: all 0.1s;
+    text-align: center;
+    padding: 12px 16px;
+    margin : 0 auto;
+  }
+
+.start-button.disabled {
+  pointer-events: none;
+}
+
+.start-button:hover {
+background-color: #ddf4ff;
+border-color: #1cb0f6;
+}
+
+.answer-button {
+    min-width: 100%;
+    background-color: white;
+    border-radius: 16px;
+    border: 2px solid #e5e5e5;
+    border-bottom: 6px solid #e5e5e5;
+    margin: 10px;
+    transition: all 0.1s;
+    display: inline-flex;
+    padding: 12px 16px;
+  }
+
+.answer-button.disabled {
+  pointer-events: none;
+}
+
+.answer-button:hover {
+background-color: #ddf4ff;
+border-color: #1cb0f6;
+}
+
+.game-button.game-card {
+  min-width: 300px;
+  max-width: 350px;
+}
+
+.game-button {
+    background-color: white;
+    border-radius: 16px;
+    border: 2px solid #e5e5e5;
+    border-bottom: 6px solid #e5e5e5;
+    margin: 10px;
+    transition: all 0.1s;
+    padding: 12px 16px;
+    text-align: center;
+}
+
+.game-button.disabled {
+  pointer-events: none;
+}
+
+.game-button:hover {
+background-color: #ddf4ff;
+border-color: #1cb0f6;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 350px);
+  grid-template-rows: repeat(2, 275px);
+  grid-gap: 8px;
+  justify-content: center;
+}
+
+/* .inner-game {
+  display: block;
+  position: relative;
+  width: 100%;
+  background-color: #D6E5FA;
+} */

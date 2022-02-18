@@ -8,9 +8,32 @@ const synths = [synth1, synth2];
 changeSynthSettings("volume", -12);
 changeSynthSettings("oscillator", "sine");
 
-var volume = -6;
+
+const limiter = new Tone.Limiter(-10).toDestination();
+
+var reverb = new Tone.Reverb(5).toDestination();
+reverb.wet.value = 0;
+
+const chorus = new Tone.Chorus(4, 2.5, 0.5).toDestination();
+chorus.wet.value = 0;
+
+const autoFilter = new Tone.AutoFilter("4n").toDestination();
+autoFilter.wet.value = 0;
+
+const autoWah = new Tone.AutoWah(50, 6, -30).toDestination();
+autoWah.Q.value = 8;
+
+var volume = -12;
+
+// synths.forEach((synth) => { synth.connect(reverb);
+//                             synth.connect(chorus);
+//                             synth.connect(autoFilter);
+//                             synth.connect(autoWah);
+//                             });
+
 
 export function changeSynthSettings(setting, newValue) {
+    console.log(setting, newValue);
     switch (setting) {
         case "volume":
             volume = newValue;
@@ -30,7 +53,20 @@ export function changeSynthSettings(setting, newValue) {
         case "decay":
             synths.forEach(synth => synth.set({ envelope: { decay: newValue}}));
             break
-
+        case "reverb":
+            reverb.wet.value = newValue ? 1 : 0;
+            break
+        case "autofilter":
+            autoFilter.wet.value = newValue ? 1 : 0;
+            newValue ? autoFilter.start() : autoFilter.stop();
+            break
+        case "chorus":
+            chorus.wet.value = newValue ? 1 : 0;
+            newValue ? chorus.start() : chorus.stop();
+            break
+        case "autowah":
+            autoWah.wet.value = newValue ? 1 : 0;
+            break
     }
 }
 

@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import AnswerButton from '../AnswerButton';
-import SettingsMenuTest from './SettingsMenuTest';
+import SettingsMenu from './SettingsMenu';
 import MusicPlayer, { resetPlaybacks , playQuestionSound } from '../MusicPlayer';
 import Score from './Score'
 import { Howl, Howler } from 'howler';
 import $ from 'jquery';
 import { Button , Collapse, Container} from 'react-bootstrap';
+import StartButton from '../StartButton';
 
 
 const correctSound = new Howl({
@@ -89,8 +90,10 @@ function IntervalTraining() {
     const [currentScore, setCurrentScore] = useState(0);
     const [totalQuestions, setTotalQuestions] = useState(0);
 
+    const [playing, setPlaying] = useState(false);
+
     useEffect(() => {
-        nextQuestion();
+        setClickables(false);
     }, []);
 
     function handleSettingsChange(setting, newValue, checkbox) {
@@ -232,12 +235,19 @@ function IntervalTraining() {
     function makePopupVisible() {
         document.getElementById('settings-pop').classList.toggle("show");
     }
+    
+    function setClickables(bool) {
+        const eles = document.getElementsByClassName('clickable');
+        if (bool) {
+            for (var i = 0; i < eles.length; i++) { eles[i].classList.remove("unclickable"); }
+        } else {
+            for (var i = 0; i < eles.length; i++) { eles[i].classList.add("unclickable"); }
+        }
+    }
 
     return(
-        <div id="game">
-            <div className="" id="game-title">
-                <h1>Interval Training</h1>
-            </div>
+        <div id="interval-training-game" className="game">
+            <h1 className="game-title">Interval Training</h1>
             <div className="row">
                 <div className="col-sm-4">
                     <Score 
@@ -246,7 +256,7 @@ function IntervalTraining() {
                     />
                 </div>
                 <div className="col-sm-4">
-                    <div id='playback'>
+                    <div id='playback' className="clickable">
                         <MusicPlayer 
                             intervalDirection={intervalDirection}
                             playbackSpeed={playbackSpeed}
@@ -262,9 +272,11 @@ function IntervalTraining() {
                 <div className="col-sm-4 relative">
                     <Button 
                         id="reset-score-btn"
+                        className="clickable"
                         onClick={() => {
+                            setPlaying(false);
                             resetStats();
-                            nextQuestion();
+                            setClickables(false);
                             }
                         }
                     ><i className="fas fa-redo"></i>
@@ -278,7 +290,7 @@ function IntervalTraining() {
             </div>
             <div className="popup">
                 <div className="popuptext" id="settings-pop">
-                    <SettingsMenuTest
+                    <SettingsMenu
                         onChange={handleSettingsChange}
                         playbackRepeats = {playbackRepeats}
                         playbackSpeed = {playbackSpeed}
@@ -291,25 +303,36 @@ function IntervalTraining() {
             </div>
             <div className="answer-section">
                 <div className="answer-boxes">
-                    <div className="row">
-                            {answerOptions.map((element, index) =>
-                                <div key={index} className="col-md-6">
-                                    <AnswerButton
-                                        key={index}
-                                        hotkey={index+1}
-                                        answerText={element.answerIndex.intervalName}
-                                        isCorrect={element.isCorrect}
-                                        id={"answerButton-" + index}
-                                        nextQuestion={nextQuestion}
-                                        updateScore={updateScore}
-                                        currentGuess={currentGuess}
-                                        incrementGuessCount={incrementGuessCount}
-                                        guessesAllowed={guessesAllowed}
-                                        playGuessSound={playGuessSound}
-                                    />
-                                </div>
-                            )}
+                    {playing ? 
+                    <div className="row answer-row">
+                        {answerOptions.map((element, index) =>
+                            <div key={index} className="col-md-6">
+                                <AnswerButton
+                                    key={index}
+                                    hotkey={index+1}
+                                    answerText={element.answerIndex.intervalName}
+                                    isCorrect={element.isCorrect}
+                                    id={"answerButton-" + index}
+                                    nextQuestion={nextQuestion}
+                                    updateScore={updateScore}
+                                    currentGuess={currentGuess}
+                                    incrementGuessCount={incrementGuessCount}
+                                    guessesAllowed={guessesAllowed}
+                                    playGuessSound={playGuessSound}
+                                />
+                            </div>
+                        )}
                     </div>
+                    :
+                    <StartButton 
+                        onClick={() => {
+                            setPlaying(true);
+                            setClickables(true);
+                            nextQuestion();
+                            }
+                        }
+                    />
+                    }
                 </div>
             </div>
         </div>
@@ -325,6 +348,5 @@ function shuffleArray(array) {
         array[j] = temp;
     }
 }
-    
 
 export default IntervalTraining;

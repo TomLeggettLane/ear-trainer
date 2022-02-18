@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import IntervalTraining from './IntervalTraining/IntervalTraining';
 import ChordTraining from './ChordTraining/ChordTraining';
+import Home from './Home/Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
-import Sidebar from './Sidebar';;
+import Sidebar from './Sidebar';
 
 function App() {
-  const [currentGame, setCurrentGame] = useState("IntervalTraining");
+  const [currentGame, setCurrentGame] = useState("Home");
 
   function handleGameChange(newGame) {
+    Array.from(document.querySelectorAll('.nav-link')).forEach((el) => el.classList.remove('active'));
+    document.getElementById(newGame + "-link").classList.add('active');
     console.log(newGame);
     setCurrentGame(newGame);
   }
@@ -20,7 +23,9 @@ function App() {
       case "ChordTraining": 
         return <ChordTraining />
       case "Home":
-        return <h1>Home Page . . . </h1>
+        return <Home 
+                  onClick={handleGameChange}
+              />
     }
   }
 

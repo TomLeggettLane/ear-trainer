@@ -4,8 +4,6 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 function Sidebar(props) {
 
     function handleClick(e) {
-      Array.from(document.querySelectorAll('.nav-link')).forEach((el) => el.classList.remove('active'));
-      e.target.classList.add('active');
       props.changeGame(e.target.name);
     }
 
@@ -20,7 +18,7 @@ function Sidebar(props) {
         <hr className="text-white"/>
         <ul className="nav nav-pills flex-column mb-auto">
           <li className="nav-item">
-            <a className="nav-link" name="Home" onClick={(e) => handleClick(e)}>
+            <a className="nav-link" id="Home-link" name="Home" onClick={(e) => handleClick(e)}>
             <div className="nav-link-icon">
               <i className="fa-solid fa-house nav-link-icon"></i>
             </div>
@@ -28,7 +26,7 @@ function Sidebar(props) {
             </a>
           </li>
           <li>
-            <a name="IntervalTraining" onClick={(e) => handleClick(e)} className="nav-link text-white active">
+            <a name="IntervalTraining" id="IntervalTraining-link" onClick={(e) => handleClick(e)} className="nav-link text-white active">
               <div className="nav-link-icon">
                 <i className="fa-solid fa-music"></i>
               </div>
@@ -36,7 +34,7 @@ function Sidebar(props) {
             </a>
           </li>
           <li>
-            <a name="ChordTraining" onClick={(e) => handleClick(e)}  className="nav-link text-white">
+            <a name="ChordTraining" id="ChordTraining-link" onClick={(e) => handleClick(e)}  className="nav-link text-white">
             <div className="nav-link-icon">
               <i className="fa-solid fa-guitar"></i>
             </div>

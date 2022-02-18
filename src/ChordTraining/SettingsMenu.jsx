@@ -3,8 +3,7 @@ import Button from 'react-bootstrap/Button';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
-
-var renders = 0;
+import SynthSettings from '../SynthSettings.jsx';
 
 function SettingsMenu(props) {
     const [radioValue, setRadioValue] = useState('1');
@@ -145,7 +144,7 @@ function SettingsMenu(props) {
             ))}
             </ButtonGroup>
         </div>,
-        "Sound Settings - synth settings etc. ",
+        <SynthSettings />,
     ];
 
     function hideSettings() {

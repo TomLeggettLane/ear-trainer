@@ -42,6 +42,7 @@ body #root {
     transition: all 0.1s;
     display: inline-flex;
     padding: 12px 16px;
+    cursor: default;
   }
 
 .answer-button.disabled {
@@ -58,7 +59,7 @@ border-color: #1cb0f6;
   height: 100%;
   max-width: 1100px;
   margin: 0 auto;
-  margin-top: 10%;
+  margin-top: 5%;
   right: 0.9%;
 }
 
@@ -104,11 +105,6 @@ border-color: #1cb0f6;
 }
 
 
-.settings-menu {
-  background-color: grey;
-  border: 2px dashed black;
-}
-
 .settings-title {
   font-size: 20px;
   margin-bottom:10px;
@@ -116,6 +112,7 @@ border-color: #1cb0f6;
 
 #settings-menu {
   background-color: white;
+  height: 100%;
 }
 
 #settings-toggle-btn {
@@ -273,8 +270,9 @@ border-color: #1cb0f6;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  left: 36.5%;
-  top: 30%;
+  left: calc((100% - 800px) / 2);
+  top:calc((100% - 480px)/2);
+  
 }
 
 /* The actual popup */
@@ -312,7 +310,7 @@ border-color: #1cb0f6;
 
 
 #settings-btn-group {
-  margin: 2% auto 5%;
+  margin: 2% auto 60px;
 }
 
 #close-settings-btn {
@@ -322,7 +320,9 @@ border-color: #1cb0f6;
 }
 
 #game-settings {
-  margin: auto;
+  height: 370px;
+  /* padding-top: 45px; */
+  justify-content: center;
   background: transparent;
 }
 
@@ -331,8 +331,15 @@ border-color: #1cb0f6;
   padding: 0 8% 0;
 }
 
-#difficulty-btn-group {
+.difficulty-settings-btn-group {
   margin: 3% 0 1%;
+}
+
+.difficulty-settings-group {
+  position: absolute;
+  width: 100%;
+  margin: 0 auto;
+  bottom: 20px;
 }
 
 .nav-link-icon {
@@ -356,6 +363,17 @@ border-color: #1cb0f6;
 
 #included-intervals {
   justify-content: center;
+  height: 350px;
+  position: relative;
+}
+
+.synth-envelope {
+  position: relative;
+  left: 30px;
+}
+
+.interval-octave-btns {
+  margin: 10px 0 30px;
 }
 
 #ex1Slider .slider-selection {
@@ -393,6 +411,10 @@ border-color: #1cb0f6;
   margin: 3%;
 }
 
+.fa-7x.active {
+  color: rgb(53, 71, 236);
+}
+
 .card-title {
   margin: 2% auto 0;
   font-weight: bold;
@@ -401,9 +423,6 @@ border-color: #1cb0f6;
 .game-description {
   margin: 5% auto 2%;
 }
-
-
-
 
 .start-button {
     min-width: 300px;
@@ -416,6 +435,7 @@ border-color: #1cb0f6;
     text-align: center;
     padding: 12px 16px;
     margin : 0 auto;
+    cursor: default;
   }
 
 .start-button.disabled {
@@ -462,6 +482,7 @@ border-color: #1cb0f6;
     transition: all 0.1s;
     padding: 12px 16px;
     text-align: center;
+    cursor: default;
 }
 
 .game-button.disabled {
@@ -481,9 +502,61 @@ border-color: #1cb0f6;
   justify-content: center;
 }
 
-/* .inner-game {
-  display: block;
+#github-link {
+  color: grey !important;
+  text-decoration: none;
+}
+
+#feedback-link {
+  color: grey !important;
+  text-decoration: none;
+  display: inline;
+  text-align: right;
+}
+
+hr {
+  border-top: 1px solid white !important;
+}
+
+.feedback-text {
+  color: grey !important;
+  text-decoration: none;
+}
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  justify-content: center;
+  text-align: center;
+}
+
+
+
+.feedback {
   position: relative;
-  width: 100%;
-  background-color: #D6E5FA;
-} */
+  display: inline-block;
+  color: grey;
+  cursor: default;
+}
+
+/* Tooltip text */
+.feedback .feedback-popup-text {
+  visibility: hidden;
+  width: 240px;
+  background-color: grey;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 2px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  left: 101px;
+  bottom: -14px;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.feedback:hover .feedback-popup-text {
+  visibility: visible;
+}

@@ -61,7 +61,7 @@ function SynthSettings(props) {
     return (
         <div>
             <div className="row">
-                <div className="col-lg-6">
+                <div className="col-lg-6 synth-envelope">
                     <div className="synth-sliders">
                         <label className="synth-slider-label">Attack </label>
                         <RangeSlider
@@ -140,7 +140,17 @@ function SynthSettings(props) {
                     </div>
                 </div>
             </div>
-            <div id="waveforms">
+            <br />
+            <br />
+            <label className="synth-slider-label">Volume</label>
+            <RangeSlider
+            min={-40}
+            max={10}
+            step={1}
+            value={volume}
+            onChange={changeEvent => handleChange("volume", changeEvent.target.value)}
+            />
+            <div id="waveforms" className="difficulty-settings-group">
                 <ButtonGroup id='waveform-btn-group'>
                 {waveforms.map((waveform, idx) => (
                     <ToggleButton
@@ -160,14 +170,6 @@ function SynthSettings(props) {
                 ))}
                 </ButtonGroup>
             </div>
-                <label className="synth-slider-label">Volume</label>
-                <RangeSlider
-                min={-40}
-                max={10}
-                step={1}
-                value={volume}
-                onChange={changeEvent => handleChange("volume", changeEvent.target.value)}
-                />
         </div>
     )
 };

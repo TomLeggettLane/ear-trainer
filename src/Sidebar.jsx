@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navbar, Container, Nav } from 'react-bootstrap';
+import { Tooltip } from 'react-bootstrap';
 
 function Sidebar(props) {
 
@@ -18,7 +18,7 @@ function Sidebar(props) {
         <hr className="text-white"/>
         <ul className="nav nav-pills flex-column mb-auto">
           <li className="nav-item">
-            <a className="nav-link" id="Home-link" name="Home" onClick={(e) => handleClick(e)}>
+            <a className="nav-link active" id="Home-link" name="Home" onClick={(e) => handleClick(e)}>
             <div className="nav-link-icon">
               <i className="fa-solid fa-house nav-link-icon"></i>
             </div>
@@ -26,7 +26,7 @@ function Sidebar(props) {
             </a>
           </li>
           <li>
-            <a name="IntervalTraining" id="IntervalTraining-link" onClick={(e) => handleClick(e)} className="nav-link text-white active">
+            <a name="IntervalTraining" id="IntervalTraining-link" onClick={(e) => handleClick(e)} className="nav-link text-white">
               <div className="nav-link-icon">
                 <i className="fa-solid fa-music"></i>
               </div>
@@ -56,11 +56,18 @@ function Sidebar(props) {
             </div>
               Rhythms
             </a>
-            
           </li>
         </ul>
-        <hr/>
 
+        <hr/>
+        <div className="feedback-grid">
+        <a href="https://github.com/TomLeggettLane/ear-trainer" className="feedback-text">GitHub</a>
+        <a className="feedback-text">|</a>
+        <div className="feedback">
+          <a className="feedback-text">Feedback</a>
+          <span className="feedback-popup-text">Please contact: tomleggettdev@gmail.com</span>
+        </div>
+        </div>
   </div>
   )
 }

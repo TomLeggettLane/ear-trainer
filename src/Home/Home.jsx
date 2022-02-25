@@ -9,12 +9,12 @@ function Home(props) {
             <div className="grid-container">
                 <div className="game-button game-card grid-item" onClick={() => props.onClick("IntervalTraining")}>
                     <h3 className="card-title">Interval Training</h3>
-                    <i className="fa-solid fa-music fa-7x"></i>
+                    <i className="fa-solid fa-music fa-7x active"></i>
                     <p className="game-description">Identify the interval between two notes.</p>
                 </div>
                 <div className="game-button game-card grid-item" onClick={() => props.onClick("ChordTraining")}>
                     <h3 className="card-title">Chord Training</h3>
-                    <i className="fa-solid fa-guitar fa-7x"></i>
+                    <i className="fa-solid fa-guitar fa-7x active"></i>
                     <p className="game-description">Identify the chord being played.</p>
                 </div>
                 <div className="game-button game-card grid-item locked unclickable" onClick={props.onClick}>

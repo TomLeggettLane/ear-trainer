@@ -66,7 +66,7 @@ function SettingsMenu(props) {
             </ToggleButtonGroup>
         </div>,
         <div id="included-intervals">
-            <div>
+            <div className="interval-octave-btns">
                 <Checkbox 
                     onChange={props.onChange}
                     label="First Octave"
@@ -118,24 +118,26 @@ function SettingsMenu(props) {
                 <div className="warning-text">
                     <span>{props.answerSet.length < 2 ? "MUST INCLUDE AT LEAST 2 INTERVALS" : ""}</span>
                 </div>
-
-            <ButtonGroup id='difficulty-btn-group'>
-            {difficulties.map((difficulty, idx) => (
-                <ToggleButton
-                    key={idx}
-                    id={`difficulty-${idx}`}
-                    type="radio"
-                    variant={difficulty.color}
-                    name="difficulty"
-                    value={difficulty.name}
-                    checked={false}  //DOESN'T WORK!!!!!
-                    onChange={(e) => {props.onChange("answerSet", e.currentTarget.value)}}
-                    size="sm"
-                >
-                    {difficulty.name}
-                </ToggleButton>
-            ))}
-            </ButtonGroup>
+            
+            <div className="difficulty-settings-group">
+                <ButtonGroup id='difficulty-btn-group' className='difficulty-settings-btn-group'>
+                {difficulties.map((difficulty, idx) => (
+                    <ToggleButton
+                        key={idx}
+                        id={`difficulty-${idx}`}
+                        type="radio"
+                        variant={difficulty.color}
+                        name="difficulty"
+                        value={difficulty.name}
+                        checked={false}  //DOESN'T WORK!!!!!
+                        onChange={(e) => {props.onChange("answerSet", e.currentTarget.value)}}
+                        size="sm"
+                    >
+                        {difficulty.name}
+                    </ToggleButton>
+                ))}
+                </ButtonGroup>
+            </div>
         </div>,
         <SynthSettings />,
     ];
@@ -168,9 +170,7 @@ function SettingsMenu(props) {
             onClick={hideSettings}
         ><i className="fa-solid fa-xmark"></i>
         </Button>
-        <div>
             {settings[radioValue-1]}
-        </div>
     </div>
     );
   }

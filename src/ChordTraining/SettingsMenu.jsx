@@ -125,24 +125,25 @@ function SettingsMenu(props) {
                 </ToggleButtonGroup>
                 <br />
             </div>
-
-            <ButtonGroup id='difficulty-btn-group'>
-            {difficulties.map((difficulty, idx) => (
-                <ToggleButton
-                    key={idx}
-                    id={`difficulty-${idx}`}
-                    type="radio"
-                    variant={difficulty.color}
-                    name="difficulty"
-                    value={difficulty.name}
-                    checked={false}  //DOESN'T WORK!!!!!
-                    onChange={(e) => {props.onChange("answerSet", e.currentTarget.value)}}
-                    size="sm"
-                >
-                    {difficulty.name}
-                </ToggleButton>
-            ))}
-            </ButtonGroup>
+            <div className='difficulty-settings-group'>
+                <ButtonGroup id='difficulty-btn-group' className='difficulty-settings-btn-group'>
+                {difficulties.map((difficulty, idx) => (
+                    <ToggleButton
+                        key={idx}
+                        id={`difficulty-${idx}`}
+                        type="radio"
+                        variant={difficulty.color}
+                        name="difficulty"
+                        value={difficulty.name}
+                        checked={false}  //DOESN'T WORK!!!!!
+                        onChange={(e) => {props.onChange("answerSet", e.currentTarget.value)}}
+                        size="sm"
+                    >
+                        {difficulty.name}
+                    </ToggleButton>
+                ))}
+                </ButtonGroup>
+            </div>
         </div>,
         <SynthSettings />,
     ];
@@ -175,9 +176,7 @@ function SettingsMenu(props) {
             onClick={hideSettings}
         ><i className="fa-solid fa-xmark"></i>
         </Button>
-        <div>
-            {settings[radioValue-1]}
-        </div>
+        {settings[radioValue-1]}
     </div>
     );
   }

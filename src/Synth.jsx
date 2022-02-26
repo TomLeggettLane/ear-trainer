@@ -33,7 +33,6 @@ var volume = -12;
 
 
 export function changeSynthSettings(setting, newValue) {
-    console.log(setting, newValue);
     switch (setting) {
         case "volume":
             volume = newValue;

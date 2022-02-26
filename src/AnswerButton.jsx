@@ -41,7 +41,7 @@ function AnswerButton(props) {
     }
 
     return (
-        <div className="answer-button" onClick={handleClick} id={props.id} title="Minor Triad I-iii-V">
+        <div className="answer-button" onClick={handleClick} id={props.id}>
             <span>{props.hotkey}.</span><p className="answer-choice">{props.answerText}</p>
         </div>
     )

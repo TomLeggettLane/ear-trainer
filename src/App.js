@@ -12,7 +12,6 @@ function App() {
   function handleGameChange(newGame) {
     Array.from(document.querySelectorAll('.nav-link')).forEach((el) => el.classList.remove('active'));
     document.getElementById(newGame + "-link").classList.add('active');
-    console.log(newGame);
     setCurrentGame(newGame);
   }
 

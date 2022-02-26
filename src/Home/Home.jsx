@@ -5,7 +5,6 @@ function Home(props) {
     return (
         <div className="game">
             <h1 className="game-title">HOME</h1>
-
             <div className="grid-container">
                 <div className="game-button game-card grid-item" onClick={() => props.onClick("IntervalTraining")}>
                     <h3 className="card-title">Interval Training</h3>

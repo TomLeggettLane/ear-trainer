@@ -7,7 +7,7 @@ Created using React.
 
 ## Description
 
-![Alt text](src\images\demo-img1.png "Demo")
+![screenshot](/src/images/demo-img1.png)
 
 I wanted to create an Ear Trainer as there aren't many great online resources for aural training.\
 

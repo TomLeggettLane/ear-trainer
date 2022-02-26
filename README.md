@@ -1,13 +1,20 @@
 # Ear Trainer
 
-A Web application created to practice aural recognition for music theory, an important skill for musicians.\
-Currently only the 'Interval Training' and 'Chord Recognition' sections are available. Created using React. 
+A Web application created to practice aural recognition for music theory, an important skill for musicians.
+Currently only the 'Interval Training' and 'Chord Recognition' sections are available./
+
+Created using React. 
 
 ## Description
 
+![Alt text](src\images\demo-img1.png "Demo")
+
+I wanted to create an Ear Trainer as there aren't many great online resources for aural training.\
+
 This was my first project using React.\
+
 I was motivated to learn React via a personal project after completing Angela Yu's "The Complete 2022 Web Development Bootcamp" course.\
-I wanted to create an Ear Trainer as there aren't many great online resources for aural training.
+
 
 ## Available Scripts
 

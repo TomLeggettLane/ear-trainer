@@ -24,12 +24,11 @@ const autoWah = new Tone.AutoWah(50, 6, -30).toDestination();
 autoWah.Q.value = 8;
 
 var volume = -12;
-
-// synths.forEach((synth) => { synth.connect(reverb);
-//                             synth.connect(chorus);
-//                             synth.connect(autoFilter);
-//                             synth.connect(autoWah);
-//                             });
+synths.forEach((synth) => { synth.connect(reverb);
+                            synth.connect(chorus);
+                            synth.connect(autoFilter);
+                            synth.connect(autoWah);
+                            });
 
 
 export function changeSynthSettings(setting, newValue) {

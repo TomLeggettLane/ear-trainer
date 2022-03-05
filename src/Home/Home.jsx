@@ -19,12 +19,12 @@ function Home(props) {
                 <div className="game-button game-card grid-item locked unclickable" onClick={props.onClick}>
                     <h3 className="card-title">Chord Progressions</h3>
                     <i className="fa-solid fa-lock fa-7x"></i>
-                    <p className="game-description">Identify the interval.</p>
+                    <p className="game-description">Identify the Chord Progressions.</p>
                 </div>
                 <div className="game-button game-card grid-item locked unclickable" onClick={props.onClick}>
                     <h3 className="card-title">Rhythm Training</h3>
                     <i className="fa-solid fa-lock fa-7x"></i>
-                    <p className="game-description">Identify the chord being played.</p>
+                    <p className="game-description">Transcribe the rhythm.</p>
                 </div>
             </div>
         </div>

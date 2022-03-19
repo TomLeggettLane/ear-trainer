@@ -11,7 +11,7 @@ I wanted to create an Ear Trainer as there aren't many great online resources fo
 
 This was my first project using React. I used Tone.js to create the synth sounds, Howler.js to play audio files, and Bootstrap and CSS. 
 
-![screenshot](/src/images/demo-img1.png)
+![screenshot](/public/images/demo-img1.png)
 
 ### Interval Training
  * Plays 2 notes, then lets the user choose the interval between them. 
